@@ -3,9 +3,10 @@ import { Auth } from "./auth";
 import { User } from "./user";
 // import { Users } from "./usersget";
 import { Signup } from "./signup";
-// import { Settings } from "./settings";
+import { Tasks } from "./tasks";
+import { Backgrounds } from "./backgrounds";
 // import { Notifications } from './notification';
-// import { Imagen } from './imagen';
+import { SearchResult } from './search';
 import thunk from "redux-thunk";
 
 export const ConfigureStore = () => {
@@ -13,11 +14,11 @@ export const ConfigureStore = () => {
     combineReducers({
       auth: Auth,
       user: User,
-      // users: Users,
-      signup: Signup
-      // setings: Settings,
+      tasks: Tasks,
+      signup: Signup,
+      backgrounds: Backgrounds,
       // notifications: Notifications,
-      // imagen: Imagen
+      searchResult: SearchResult
     }),
     applyMiddleware(thunk)
   );

@@ -1,17 +1,17 @@
 import { Link } from "react-router-dom";
 export default function Index() {
     return (
-        <div>
+        <div className="index">
             <div className="index-container" >
                 <div className="index-title">
                     <h1>
                         Mejora tu productividad en el trabajo organizando las tareas
                     </h1>
-                    <button>
-                        <Link to={`/login`}>
+                    <Link to={`/login`}>
+                        <button>
                             Ir a la app
-                        </Link>
-                    </button>
+                        </button>
+                    </Link>
                 </div>
                 <div className="index-img">
                     <img src="/first-div.svg" alt="" />
@@ -26,11 +26,11 @@ export default function Index() {
                     <h1>
                         Crea diferentes tipos de tareas
                     </h1>
-                    <button>
-                        <Link to={`/signup`}>
+                    <Link to={`/signup`}>
+                        <button>
                             Sign Up
-                        </Link>
-                    </button>
+                        </button>
+                    </Link>
                 </div>
             </div>
             <div className="index-container" >
@@ -38,11 +38,11 @@ export default function Index() {
                     <h1>
                         Comparti listas de tareas en grupos de usuarios
                     </h1>
-                    <button>
-                        <Link to={`/login`}>
+                    <Link to={`/login`}>
+                        <button>
                             Login
-                        </Link>
-                    </button>
+                        </button>
+                    </Link>
                 </div>
                 <div className="index-img">
                     <img src="/tercer-div.svg" alt="" />

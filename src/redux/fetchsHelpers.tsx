@@ -101,9 +101,9 @@ export const postHelperMedia = (url:any, creds:any) => {
       throw errmess;
     })
 }
-export const putHelperBody = (url:any, creds:any, userID:any) => {
+export const putHelperBody = (url:any, creds:any) => {
   const bearer = 'Bearer ' + localStorage.getItem('token');
-  return fetch(baseUrl + url + userID, {
+  return fetch(baseUrl + url , {
     method: "PUT",
     body: JSON.stringify(creds),
     headers: {
@@ -128,6 +128,7 @@ export const putHelperBody = (url:any, creds:any, userID:any) => {
         throw errmess;
       }
     )
+    .then(response => response.json())
     .then(result => {
       return result
     })

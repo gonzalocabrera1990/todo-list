@@ -8,6 +8,8 @@ function SignUp(props:any) {
     username: '',
     password: '',
     repeatpassword: '',
+    firstname: '',
+    lastname: '',
     gender: '',
     date: '',
     country: ''
@@ -15,10 +17,13 @@ function SignUp(props:any) {
   const [touched, setTouched] = useState({
     password: false,
     username: false,
-    repeatpassword: false
+    repeatpassword: false,
+    firstname: false,
+    lastname: false
   })
 
   let navigate = useNavigate();
+
   const controlState = (e:any) => {
     const target = e.target;
     const value = target.value;
@@ -26,7 +31,7 @@ function SignUp(props:any) {
     setDataForm((prevProps)=>({
       ...prevProps,
       [name]: value
-    }))
+    }))    
   }
 
   const handleBlur = (field:any) => (e:any) => {
@@ -37,17 +42,38 @@ function SignUp(props:any) {
     )
   }
 
-  const validar = ( username:string, password:string, repeatpassword:string, gender:string, date:string, country:string) => {
+  const validar = ( username:string, password:string, repeatpassword:string,firstname:string,lastname:string, gender:string, date:string, country:string) => {
     const error = {
       password: { err: "", valid: false },
       repeatpassword: { err: "", valid: false },
       username: { err: "", valid: false },
+      firstname: { err: "", valid: false },
+      lastname: { err: "", valid: false },
       gender: false,
       date: false,
       country: false
     };
+  
     
     const expreg = /^(\w{3,})@(gmail|hotmail|outlook).\b(com|info|web)\b/;
+
+    if (touched.firstname && firstname.length < 1) {
+      error.firstname.err = "It is empty.";
+    } else if (touched.firstname && firstname.length > 15) {
+      error.firstname.err = "It must be less than or equal to 15 characters.";
+    } else if (firstname !== "") {
+      error.firstname.valid = true
+    }
+
+    if (touched.lastname && lastname.length < 1) {
+      error.lastname.err = "It is empty.";
+    } else if (touched.lastname && lastname.length > 15) {
+      error.lastname.err = "It must be less than or equal to 15 characters.";
+    } else if (lastname !== "") {
+      error.lastname.valid = true
+    }
+
+
 
     if (touched.password && password.length < 4) {
       error.password.err =
@@ -85,6 +111,7 @@ function SignUp(props:any) {
     if (country !== "") {
       error.country = true
     }
+  
     return error;
   }
 
@@ -100,24 +127,26 @@ function SignUp(props:any) {
       dataForm.username,
       dataForm.password,
       dataForm.repeatpassword,
+      dataForm.firstname,
+      dataForm.lastname,
       dataForm.gender,
       dataForm.date,
       dataForm.country
     );
     const enableButton = error.username.valid && error.password.valid &&
-      error.repeatpassword.valid && error.gender &&
+      error.repeatpassword.valid && error.firstname.valid && error.lastname.valid && error.gender &&
       error.date && error.country ? true : false;
       
     const country = countries.map((c, index) => <option key={index}>{c}</option>)
   return (
-    <div className="signup-container">
+    <div className="wraper-login">
       <div className="container">
         <div className="">
           <h1>SignUp</h1>
         </div>
       </div>
 
-      <div className="container">
+      <div className="data-form">
         <form onSubmit={onSubmit}  className="">
           <div className="input-container" >
             <label htmlFor="username" >
@@ -172,6 +201,44 @@ function SignUp(props:any) {
                 onChange={controlState}
                 onBlur={handleBlur("repeatpassword")}
               />
+            </div>
+          </div>
+          <div className="input-container" >
+            <label htmlFor="firstname" >
+              Nombre
+            </label>
+            <div >
+              <input
+                type="text"
+                id="firstname"
+                name="firstname"
+                placeholder="firstname"
+                value={dataForm.firstname}
+                // valid={error.username.err === ""}
+                //invalid={error.username.err !== ""}
+                onChange={controlState}
+                onBlur={handleBlur("firstname")}
+              />
+              
+            </div>
+          </div>
+          <div className="input-container" >
+            <label htmlFor="lastname" >
+              Apellido
+            </label>
+            <div >
+              <input
+                type="text"
+                id="lastname"
+                name="lastname"
+                placeholder="lastname"
+                value={dataForm.lastname}
+                // valid={error.username.err === ""}
+                //invalid={error.username.err !== ""}
+                onChange={controlState}
+                onBlur={handleBlur("lastname")}
+              />
+              
             </div>
           </div>
           <div className="input-container" >
