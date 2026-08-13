@@ -18,19 +18,36 @@ export default function Navbar(props: Props) {
         noSeen: false
     })
     const navigate = useNavigate();
-    const user = JSON.parse(localStorage.getItem("id") || '')
-    useEffect(() => {
-        if (props.tasks) {
-            setTasks(props.tasks)
-            let assignAmount = 0
-            const assign = props.tasks.groups.some((group: any) => group.tasks.some((task: any) => task.appointed == user && task.seen == false))
-            const assignSeen = props.tasks.groups.map((group: any) => group.tasks.map((task: any) => task.appointed == user && task.seen == false ? assignAmount++ : null))
-            setAssignTasks({
-                amount: assignAmount,
-                noSeen: assign
-            })
+
+    // 1. Mantén el ID del usuario como un valor derivado o léelo de forma segura
+    const userId = (() => {
+        try {
+            return JSON.parse(localStorage.getItem("id") || 'null')
+        } catch {
+            return null
         }
-    }, [props.tasks])
+    })()
+
+    useEffect(() => {
+        if (!props.tasks || !userId) return
+
+        setTasks(props.tasks)
+
+        // Calculamos de forma segura sin mutaciones
+        const groups = props.tasks.groups || []
+        const unreadCount = groups.reduce((totalAcc: number, group: any) => {
+            const groupTasks = group?.tasks || []
+            const countInGroup = groupTasks.filter(
+                (task: any) => String(task.appointed._id) === String(userId) && !task.seen
+            ).length
+            return totalAcc + countInGroup
+        }, 0)
+        
+        setAssignTasks({
+            amount: unreadCount,
+            noSeen: unreadCount > 0
+        })
+    }, [props.tasks, userId]) // Agregamos userId como dependencia
 
     const showGroup = () => {
         const element = document.getElementById('grupos')
@@ -54,7 +71,7 @@ export default function Navbar(props: Props) {
         navigate('/searchView')
     }
     const readTasks = () => {
-        fetch(`${baseUrl}tasks/read-tasks/${user}`)
+        fetch(`${baseUrl}tasks/read-tasks/${userId}`)
         .then((response:any)=> response.json())
         .then((response:any)=> {
             console.log(response);
