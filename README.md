@@ -1,27 +1,214 @@
-# React + TypeScript + Vite
+# TODO App - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<p align="center">
 
-Currently, two official plugins are available:
+Aplicación web desarrollada con **React + Vite** para la gestión colaborativa de tareas.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+</p>
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## 📖 Descripción
 
-- Configure the top-level `parserOptions` property like this:
+TODO App es una aplicación orientada a la administración de tareas personales y colaborativas.
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
+Cada usuario puede autenticarse dentro de la plataforma, crear tareas individuales o administrar grupos de trabajo (listas de tareas) donde es posible incorporar nuevos integrantes y asignar responsabilidades específicas a cada miembro.
+
+Este repositorio contiene únicamente el **Frontend** de la aplicación.
+
+> El Backend se encuentra en un repositorio independiente y es un requisito indispensable para ejecutar correctamente el proyecto.
+
+---
+
+# 🚀 Funcionalidades
+
+* 🔐 Autenticación de usuarios
+
+  * Inicio de sesión
+  * Registro
+  * Manejo de sesión
+
+* ✅ Gestión de tareas
+
+  * Crear tareas
+  * Editar tareas
+  * Eliminar tareas
+  * Marcar tareas como completadas
+
+* 👥 Gestión de grupos
+
+  * Crear grupos de trabajo
+  * Buscar usuarios
+  * Agregar integrantes
+  * Asignar tareas a cada integrante
+
+* 📋 Organización
+
+  * Listas de tareas
+  * Administración de responsables
+  * Estado de las tareas
+
+---
+
+# 🛠 Tecnologías utilizadas
+
+* React
+* Vite
+* JavaScript / TypeScript
+* React Router
+* CSS
+* Redux
+
+---
+
+# 📁 Repositorios
+
+Frontend (este proyecto)
+
+```bash
+git clone https://github.com/gonzalocabrera1990/todo-list.git
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Backend
+
+```bash
+git clone https://github.com/gonzalocabrera1990/todo-list-backend.git
+```
+
+---
+
+# ⚙ Requisitos
+
+Antes de ejecutar el proyecto es necesario tener instalado:
+
+* Node.js 18.20.8
+* npm (incluido con Node.js)
+* Git
+
+Si utilizas nvm:
+
+```bash
+nvm use
+```
+
+El proyecto incluye un archivo `.nvmrc` con la versión recomendada de Node.js.
+
+Además:
+
+* Clonar y ejecutar el repositorio del Backend.
+* Configurar las variables de entorno del Backend.
+* Verificar que la API esté funcionando antes de iniciar el Frontend.
+
+---
+
+# 📥 Instalación
+
+## 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/gonzalocabrera1990/todo-list.git
+```
+
+## 2. Ingresar al proyecto
+
+```bash
+cd todo-list
+```
+
+## 3. Instalar dependencias
+
+```bash
+npm install
+```
+
+---
+
+# ▶ Ejecutar el proyecto
+
+Iniciar el servidor de desarrollo:
+
+```bash
+npm run dev
+```
+
+Vite mostrará una salida similar a:
+
+```text
+Local: http://localhost:5173
+```
+
+Abrir esa URL en el navegador.
+
+---
+
+# 📦 Build para producción
+
+```bash
+npm run build
+```
+
+---
+
+# 👀 Vista previa del build
+
+```bash
+npm run preview
+```
+
+---
+
+# 🧹 Linter
+
+```bash
+npm run lint
+```
+
+---
+
+# 📜 Scripts disponibles
+
+| Script            | Descripción                        |
+| ----------------- | ---------------------------------- |
+| `npm install`     | Instala las dependencias           |
+| `npm run dev`     | Inicia el servidor de desarrollo   |
+| `npm run build`   | Genera la versión de producción    |
+| `npm run preview` | Ejecuta una vista previa del build |
+| `npm run lint`    | Ejecuta el linter                  |
+
+---
+
+
+# 🔄 Flujo de ejecución
+
+```text
+Usuario
+      │
+      ▼
+Frontend (React + Vite)
+      │
+      ▼
+API REST (Backend)
+      │
+      ▼
+Base de Datos
+```
+
+---
+
+# 🤝 Dependencia con el Backend
+
+Este proyecto consume una API REST desarrollada en un repositorio independiente.
+
+Para que el Frontend funcione correctamente es necesario:
+
+1. Clonar el Backend.
+2. Instalar sus dependencias.
+3. Configurar sus variables de entorno.
+4. Iniciar el servidor del Backend.
+5. Ejecutar posteriormente este proyecto.
+
+---
+
+# 👨‍💻 Autor
+
+Desarrollado como proyecto Full Stack con una arquitectura de repositorios separados (Frontend y Backend), aplicando buenas prácticas de desarrollo, componentes reutilizables y consumo de APIs REST.

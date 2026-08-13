@@ -2,9 +2,7 @@ import * as ActionTypes from "./ActionTypes";
 import { getHelper, postHelperBody, postHelperMedia, putHelperBody, deleteHelper } from "./fetchsHelpers";
 
 export const loginUser = (creds:any) => async (dispatch:any) => {
-  // We dispatch requestLogin to kickoff the call to the API
-  console.log("creds", creds);
-  
+  // We dispatch requestLogin to kickoff the call to the API  
   dispatch(requestLogin(creds));
   postHelperBody("users/login", creds)
     .then(response => {
@@ -46,7 +44,6 @@ export const loginError = (message:any) => {
 };
 //REGISTER POST DATA
 export const signupUser =  (User:any) => async (dispatch:any) => {
-  console.log("creds", User);
   const newUser = {
     username: User.username,
     password: User.password,
@@ -105,8 +102,6 @@ export const fetchUser = (id:string) => async (dispatch:any) => {
   dispatch(userLoading());
   getHelper(`users/get-home-user/${id}`)
     .then(response => {
-      console.log('response', response)
-      // localStorage.setItem("img", JSON.stringify(response.image.filename));
       dispatch(receiveUser(response));
       const tasksDispatch = {
         tasks: response.tasks,
@@ -141,14 +136,9 @@ export const receiveUserError = (error:any) => {
 };
 
 export const createTask = (task:any, id:string) => (dispatch:any) => {
-  console.log("task", task);
-  console.log("id", id);
-  
   dispatch(taskLoading())
   postHelperBody(`tasks/create-task/${id}`, task)
   .then((response)=>{
-    console.log("response", response);
-    
     const tasksDispatch = {
       tasks: response.tasks,
       todaytasks: response.todaytasks,
@@ -163,14 +153,9 @@ export const createTask = (task:any, id:string) => (dispatch:any) => {
   .catch(error => dispatch(receiveTaskError(error)));
 }
 export const updateTask = (url: string, id:string, task:any) => (dispatch:any) => {
-  console.log("task", task);
-  console.log("id", id);
-  
   dispatch(taskLoading())
   putHelperBody(`tasks/${url}/${id}/${task._id}`, task)
   .then((response)=>{
-    console.log("response", response);
-    
     const tasksDispatch = {
       tasks: response.tasks,
       todaytasks: response.todaytasks,
@@ -185,14 +170,9 @@ export const updateTask = (url: string, id:string, task:any) => (dispatch:any) =
   .catch(error => dispatch(receiveTaskError(error)));
 }
 export const checkTask = (url: string, id:string, task:any) => (dispatch:any) => {
-  console.log("task", task);
-  console.log("id", id);
-  
   dispatch(taskLoading())
   putHelperBody(`tasks/${url}/${id}/${task._id}`, task)
   .then((response)=>{
-    console.log("response", response);
-    
     const tasksDispatch = {
       tasks: response.tasks,
       todaytasks: response.todaytasks,
@@ -207,14 +187,9 @@ export const checkTask = (url: string, id:string, task:any) => (dispatch:any) =>
   .catch(error => dispatch(receiveTaskError(error)));
 }
 export const deleteTask = (url: string, id:string, task:any) => (dispatch:any) => {
-  console.log("task", task);
-  console.log("id", id);
-  
   dispatch(taskLoading())
   deleteHelper(`tasks/${url}/${id}/${task}`)
   .then((response)=>{
-    console.log("response", response);
-    
     const tasksDispatch = {
       tasks: response.tasks,
       todaytasks: response.todaytasks,
@@ -229,14 +204,9 @@ export const deleteTask = (url: string, id:string, task:any) => (dispatch:any) =
   .catch(error => dispatch(receiveTaskError(error)));
 }
 export const createDateTask = (task:any, id:string) => (dispatch:any) => {
-  console.log("task", task);
-  console.log("id", id);
-  
   dispatch(taskLoading())
   postHelperBody(`tasks/create-datetask/${id}`, task)
   .then((response)=>{
-    console.log("response", response);
-    
     const tasksDispatch = {
       tasks: response.tasks,
       todaytasks: response.todaytasks,
@@ -251,14 +221,9 @@ export const createDateTask = (task:any, id:string) => (dispatch:any) => {
   .catch(error => dispatch(receiveTaskError(error)));
 }
 export const createFavTask = (task:any, id:string) => (dispatch:any) => {
-  console.log("task", task);
-  console.log("id", id);
-  
   dispatch(taskLoading())
   postHelperBody(`tasks/create-favtask/${id}`, task)
   .then((response)=>{
-    console.log("response", response);
-    
     const tasksDispatch = {
       tasks: response.tasks,
       todaytasks: response.todaytasks,
@@ -294,8 +259,6 @@ export const dropFavTask = (task:any, userId:string, taskId:string) => (dispatch
   dispatch(taskLoading())
   postHelperBody(`tasks/drop-favtask/${userId}/${taskId}`, task)
   .then((response)=>{
-    console.log("response", response);
-    
     const tasksDispatch = {
       tasks: response.tasks,
       todaytasks: response.todaytasks,
@@ -313,8 +276,6 @@ export const createGroup = (group:any, userId:string) => (dispatch:any) => {
   dispatch(taskLoading())
   postHelperBody(`tasks/create-user-group/${userId}`, group)
   .then((response)=>{
-    console.log("response", response);
-    
     const tasksDispatch = {
       tasks: response.tasks,
       todaytasks: response.todaytasks,
@@ -332,8 +293,6 @@ export const deleteTaskGroup = (userId:string, userTaskId:string, groupId:string
   dispatch(taskLoading())
   deleteHelper(`tasks/task-group-delete/${userId}/${userTaskId}/${groupId}/${taskId}`)
   .then((response)=>{
-    console.log("response", response);
-    
     const tasksDispatch = {
       tasks: response.tasks,
       todaytasks: response.todaytasks,
@@ -348,14 +307,9 @@ export const deleteTaskGroup = (userId:string, userTaskId:string, groupId:string
   .catch(error => dispatch(receiveTaskError(error)));
 }
 export const updateTaskGroup = (id:string, oldUser: string, task:any) => (dispatch:any) => {
-  console.log("task", task);
-  console.log("id", id);
-  
   dispatch(taskLoading())
   putHelperBody(`tasks/update-assingTasks/${id}/${oldUser}/${task._id}`, task)
   .then((response)=>{
-    console.log("response", response);
-    
     const tasksDispatch = {
       tasks: response.tasks,
       todaytasks: response.todaytasks,
@@ -375,8 +329,6 @@ export const createList = (list:any, userId:string) => (dispatch:any) => {
   dispatch(taskLoading())
   postHelperBody(`tasks/create-user-list/${userId}`, list)
   .then((response)=>{
-    console.log("response", response);
-    
     const tasksDispatch = {
       tasks: response.tasks,
       todaytasks: response.todaytasks,
@@ -394,8 +346,6 @@ export const createTaskList = (userId:string, listId:any, task:any) => (dispatch
   dispatch(taskLoading())
   postHelperBody(`tasks/create-task-list/${userId}/${listId}`, task)
   .then((response)=>{
-    console.log("response", response);
-    
     const tasksDispatch = {
       tasks: response.tasks,
       todaytasks: response.todaytasks,
@@ -413,8 +363,6 @@ export const updateTaskList = (userId:string, listId:any, task:any) => (dispatch
   dispatch(taskLoading())
   postHelperBody(`tasks/task-list-update/${userId}/${listId}/${task._id}`, task)
   .then((response)=>{
-    console.log("response", response);
-    
     const tasksDispatch = {
       tasks: response.tasks,
       todaytasks: response.todaytasks,
@@ -432,8 +380,6 @@ export const checkGroupTask = (url: string, userId: string, groupId:string, task
   dispatch(taskLoading())
   putHelperBody(`tasks/${url}/${userId}/${groupId}/${task._id}`, task)
   .then((response)=>{
-    console.log("response", response);
-    
     const tasksDispatch = {
       tasks: response.tasks,
       todaytasks: response.todaytasks,
@@ -451,8 +397,6 @@ export const sendGroupTask = (userId:string, groupId:string, task:any) => (dispa
   dispatch(taskLoading())
   postHelperBody(`tasks/create-tasks-group/${userId}/${groupId}`, task)
   .then((response)=>{
-    console.log("response", response);
-    
     const tasksDispatch = {
       tasks: response.tasks,
       todaytasks: response.todaytasks,
@@ -469,8 +413,6 @@ export const sendGroupTask = (userId:string, groupId:string, task:any) => (dispa
 export const addUserGroup = (userid: string, groupid: string, itemid: string) => (dispatch:any) => {
   getHelper(`tasks/add-user-group/${userid}/${groupid}/${itemid}`)
   .then((response)=>{
-    console.log("response", response);
-    
     const tasksDispatch = {
       tasks: response.tasks,
       todaytasks: response.todaytasks,
@@ -488,8 +430,6 @@ export const deleteUserGroup = (userId:string, groupUser:string, groupId:string)
   dispatch(taskLoading())
   deleteHelper(`tasks/group-delete-user/${userId}/${groupUser}/${groupId}`)
   .then((response)=>{
-    console.log("response", response);
-    
     const tasksDispatch = {
       tasks: response.tasks,
       todaytasks: response.todaytasks,
@@ -507,8 +447,6 @@ export const deleteTaskList = (userId:string, listId:string, taskId:string) => (
   dispatch(taskLoading())
   getHelper(`tasks/task-list-delete/${userId}/${listId}/${taskId}`)
   .then((response)=>{
-    console.log("response", response);
-    
     const tasksDispatch = {
       tasks: response.tasks,
       todaytasks: response.todaytasks,
@@ -526,8 +464,6 @@ export const deleteListGroup = (url:string, userId:string, id:string) => (dispat
   dispatch(taskLoading())
   deleteHelper(`tasks/${url}/${userId}/${id}`)
   .then((response)=>{
-    console.log("response", response);
-    
     const tasksDispatch = {
       tasks: response.tasks,
       todaytasks: response.todaytasks,
@@ -567,9 +503,6 @@ export const imagenUser = (userID:string, image:any) => async (dispatch:any) => 
     });
 };
 export const changeBackgrounds = (id:any, data:string) => (dispatch:any) => {
-  console.log("data", data);
-  console.log("id", id);
-  
   postHelperBody(`users/change-background/${id}`, data)
   .then((response)=>{
     dispatch(Backgrounds(response));
@@ -596,8 +529,6 @@ export const search = (data:any, textoBusqueda:string) => (dispatch:any) => {
   }
   let resultados:any = []
   for (let i = 0; i < data.length; i++) {
-    console.log("aaaaa");
-    
     for (let j = 0; j < data[i].length; j++) {
       let conditional = data[i][j].description.includes(textoBusqueda)
       if (conditional) {
@@ -619,535 +550,4 @@ export const searchFiled = (result:any) => ({
   type: ActionTypes.SEARCH_FAILED,
   payload:result
 });
-// //CHECK JWTTOKEN
-// export const checkToken = () => (dispatch) => {
-//   dispatch(tokenLoading());
-//   // let tokenResponse = await getHelper('users/checkJWTtoken')
-//   getHelper('users/checkJWTtoken')
-//   .then(result => {
-//     dispatch(tokenCheck());
-//   })
-//   .catch(error => {
-//     dispatch(tokenCheck());
-//   })
-// }
-// export const tokenLoading = () => ({
-//   type: ActionTypes.TOKEN_LOADING
-// });
-// export const tokenCheck = () => ({
-//   type: ActionTypes.TOKEN_CHECK
-// });
-// export const userCheck = () => ({
-//   type: ActionTypes.USER_CHECK
-// });
 
-// //VIEW AFTER LOGIN
-// export const fetchStart = () => (dispatch) => {
-//   dispatch(startLoading());
-//   const id = JSON.parse(localStorage.getItem('id'))
-//   getHelper(`start/publications/${id}`)
-//     .then(start => dispatch(addStart(start)))
-//     .then(start => dispatch(inboxFetch()))
-//     .catch(error => dispatch(startFailed(error.message)));
-// }
-// export const startLoading = () => ({
-//   type: ActionTypes.START_LOADING
-// });
-
-// export const startFailed = (errmess) => ({
-//   type: ActionTypes.START_FAILED,
-//   payload: errmess
-// });
-
-// export const addStart = (start) => ({
-//   type: ActionTypes.START_ADD,
-//   payload: start
-// });
-// //DELETE IMAGE AND VIDEO WALL
-// export const removePhotograph = (imgId) => async dispatch => {
-//   dispatch(userLoading());
-//   postHelperBody( `imagen/removeimage`, imgId)
-//     .then(json => {
-//       dispatch(receiveUser(json));
-//     })
-//     .catch(error => dispatch(receiveUserError(error)));
-// }
-
-// export const removeVideo = (imgId) => async dispatch => {
-//   dispatch(userLoading());
-//   postHelperBody(`imagen/removevideo`, imgId)
-//     .then(json => {
-//       dispatch(receiveUser(json));
-//     })
-//     .catch(error => dispatch(receiveUserError(error)));
-// }
-
-
-
-
-
-
-
-
-// //INBOX
-// export const inboxFetch = () => async dispatch => {
-//   dispatch(inboxLoading());
-//   const QUERY = JSON.parse(localStorage.getItem('id'));
-//   getHelper(`inbox-message/getch/${QUERY}`)
-//   .then(inbox => {
-//     const message = inbox.some(i => i.talk.some(t => t.author !== QUERY && t.seen === false))
-//     dispatch(inboxAdd(inbox, message))})
-//   .catch(error => dispatch(inboxFailed(error.message)));
-// }
-// export const inboxLoading = () => ({
-//   type: ActionTypes.INBOX_LOADING
-// });
-
-// export const inboxFailed = (errmess) => ({
-//   type: ActionTypes.INBOX_FAILED,
-//   payload: errmess
-// });
-
-// export const inboxAdd = (inbox, read) => ({
-//   type: ActionTypes.INBOX_SUCCESS,
-//   payload: inbox,
-//   read
-// });
-
-
-
-
-
-// //FETCH USERS COMPONENT
-// export const fetchDataUser = (url) => async dispatch => {
-//   dispatch(usersLoading());
-//   getHelper(`users/profile/${url.host}/${url.user}`)
-//     .then(response => {
-//       dispatch(receiveUsers(response));
-//     })
-//     .catch(error => dispatch(receiveUsersError(error)));
-// };
-
-// export const usersLoading = () => ({
-//   type: ActionTypes.USERS_LOADING
-// });
-
-// export const receiveUsers = response => {
-//   return {
-//     type: ActionTypes.USERS_SUCCESS,
-//     user: response
-//   };
-// };
-// export const receiveUsersError = error => {
-//   return {
-//     type: ActionTypes.USERS_ERROR,
-//     errMess: error
-//   };
-// };
-
-// //Settings fetch
-
-// export const settingsUser = (userID, Settings) => async dispatch => {
-//   const settingsUser = {
-//     firstname: Settings.firstname,
-//     lastname: Settings.lastname,
-//     phrase: Settings.phrase,
-//     status: Settings.status
-//   };
-//   putHelperBody("users/settings/", settingsUser, userID)
-//     .then((response) => {
-//       const Resp = response.status;
-//       dispatch(responseSettings(Resp));
-//     })
-//     .catch(error => {
-//       const Err = error.status;
-//       dispatch(errorSettings(Err));
-//     });
-// };
-
-// export const responseSettings = creds => {
-//   return {
-//     type: ActionTypes.SETTINGS_SUCCESS,
-//     payload: creds
-//   };
-// };
-// export const errorSettings = creds => {
-//   return {
-//     type: ActionTypes.SETTINGS_FAILURE,
-//     payload: creds
-//   };
-// };
-
-// //IMAGEN FETCH
-
-// export const imagenUser = (userID, image) => async dispatch => {
-//   postHelperMedia(`imagen/profile-image-post/change/${userID}`, image)
-//     .then(() => {
-//       window.location.reload();
-//     })
-//     .catch(error => {
-//       console.log("ERROR");
-//     });
-// };
-
-// //IMAGEN WALL FETCH
-
-// export const imagenWall = (userID, image) => async dispatch => {
-// postHelperMedia(`imagen/imageswall/${userID}`, image)
-// .then(() => {
-//   window.location.reload();
-// })
-// .catch(error => {
-//   console.log("ERROR");
-// });
-// };
-
-// //STORIES
-// export const storiesCreator = (userID, image) => async dispatch => {
-//   try {
-//     let response = await postHelperMedia(`imagen/story-post/${userID}`, image)
-//     return response
-//   } catch (error) {
-//     console.log("SETTINGS ERROR", error);
-//   }
-//     // .then(response => {
-//     //   console.log('response', response);
-//     // })
-//     // .catch(error => {
-//     //   console.log("SETTINGS ERROR");
-//     // });
-// };
-// const measure = (timestamp) => {
-//   let inicio = new Date(timestamp).getTime();
-//   let now = Date.now();
-//   let res = now - inicio;
-//   const hours = (Math.floor((res)/1000))/3600;
-//   return hours;
-// }
-// export const storyFetcher = (followingList) => dispatch => {
-//   dispatch(storyLoading());
-//   let storageId = JSON.parse(localStorage.getItem('id'))
-//   let nss = followingList.filter(us=> us.id.stories.find(h => measure(h.timestamp) <= 24 && !h.views.some(v => v === storageId)))
-//   let ss = followingList.filter(us=> us.id.stories.every(h => measure(h.timestamp) <= 24 && h.views.includes(storageId)))
-  
-//   let measureNoSeenStory = !nss ? null : nss.map(u=>u.id.stories.filter(s=>measure(s.timestamp) <= 24))
-//   let filterMeasureNoSeenStory = measureNoSeenStory.filter(n => n.length > 0)
-//   let measureSeenStory = !ss ? null : ss.map(u=>u.id.stories.filter(s=>measure(s.timestamp) <= 24))
-//   let filterMeasureSeenStory = measureSeenStory.filter(n => n.length > 0)
-
-//   const storyStore = {
-//     users: {
-//       noSeen: nss,
-//       seen: ss
-//     },
-//     stories: {
-//       noSeen: filterMeasureNoSeenStory,
-//       seen: filterMeasureSeenStory
-//     }
-//   }
-//   dispatch(receiveStory(storyStore));
-// };
-// export const storyLoading = () => ({
-//   type: ActionTypes.STORY_LOADING
-// });
-
-// export const receiveStory = response => {
-//   return {
-//     type: ActionTypes.STORY_SUCCESS,
-//     story: response
-//   };
-// };
-// export const receiveStoryError = error => {
-//   return {
-//     type: ActionTypes.STORY_FAILED,
-//     errMess: error
-//   };
-// };
-
-// export const storiesView = (userID, image) => async dispatch => {
-//   postHelperBody(`imagen/story-view/${userID}/${image}`)
-//     .then(response => {
-//       console.log('response', response);
-//     })
-//     .catch(error => {
-//       console.log("SETTINGS ERROR");
-//     });
-// };
-// //STORIES
-
-// //FETCH IMAGEN AND COMMENTS TO ImagenComponent
-// export const imagenFetch = (image) => async dispatch => {
-//   dispatch(imagenLoading());
-//   getHelper(`imagen/view/imagenwall/${image}`)
-//   .then(img => {
-//       dispatch(imagenFetchComments(image, img));
-//     })
-//   .catch(error => {
-//       dispatch(imagenError(error))
-//     });
-// };
-// const imagenFetchComments = (image, imgObj) => async dispatch => {
-//   const DATA = {
-//     imagen: imgObj,
-//     comments: null
-//   }
-//   getHelper(`comments/get-comments-image/${image}`)
-//   .then(comments => {
-//       DATA.comments = comments
-//     })
-//   .then(x => {
-//       dispatch(imagenSuccess(DATA))
-//     })
-//   .catch(error => {
-//       dispatch(imagenError(error))
-//     });
-// };
-// export const imagenLoading = () => {
-//   return {
-//     type: ActionTypes.IMAGEN_LOADING
-//   }
-// }
-
-// export const imagenSuccess = (users) => {
-//   return {
-//     type: ActionTypes.IMAGEN_SUCCESS,
-//     payload: users
-//   }
-// }
-
-// export const imagenError = (message) => {
-//   return {
-//     type: ActionTypes.IMAGEN_FAILED,
-//     payload: message
-//   }
-// }
-
-// //GET Users notifications
-// export const fetchNotifications = (query) =>async dispatch => {
-//   dispatch(notifLoading());
-//   const QUERY = query;
-//   getHelper(`notification/user-notifications/get/${QUERY}`)
-//     .then(response => {
-//       dispatch(nofifSuccess(response));
-//     })
-//     .catch(error => dispatch(notifError(error.message)))
-
-// }
-// export const notifLoading = () => {
-//   return {
-//     type: ActionTypes.NOTIFICATION_LOADING
-//   }
-// }
-
-// export const nofifSuccess = (users) => {
-//   return {
-//     type: ActionTypes.NOTIFICATION_SUCCESS,
-//     payload: users
-//   }
-// }
-
-// export const notifError = (message) => {
-//   return {
-//     type: ActionTypes.NOTIFICATION_ERROR,
-//     ERR: message
-//   }
-// }
-
-
-// //FOLLOWER
-
-// export const followFetch = (followingId, followerId, urlUsers) => async dispatch => {
-//   const data = {
-//     followingId: followingId,
-//     message: "Friend Request"
-//   }
-//   postHelperBody(`notification/following-user/send/${followerId}`, data)
-//   .then(list => {
-//     dispatch(fetchDataUser(urlUsers));
-//   })
-// }
-
-// //FOLLOWER ACEPTAR/RECHAZAR SOLICITUD
-
-// export const friendRequestResponse = (dataNotification) => async dispatch => {
-//   const data = {
-//     action: dataNotification.action,
-//     followingId: JSON.parse(localStorage.getItem("id")),
-//   }
-//   postHelperBody(`notification/following-request/${dataNotification.followerId}/${dataNotification.notiId}`, data).then(res => res)
-// }
-// //GET Users followers
-// export const fetchFollowers = () => async dispatch => {
-//   dispatch(followersLoading());
-//   const QUERY = JSON.parse(localStorage.getItem("id"));
-//   getHelper(`users/followers-notifications-return/${QUERY}`)
-//     .then(response => {
-//       dispatch(followersSuccess(response));
-//     })
-//     .catch(error => dispatch(followersError(error.message)))
-// }
-// export const followersLoading = () => {
-//   return {
-//     type: ActionTypes.FOLLOWERS_LOADING
-//   }
-// }
-
-// export const followersSuccess = (followers) => {
-//   return {
-//     type: ActionTypes.FOLLOWERS_SUCCESS,
-//     payload: followers
-//   }
-// }
-
-// export const followersError = (message) => {
-//   return {
-//     type: ActionTypes.FOLLOWERS_ERROR,
-//     ERR: message
-//   }
-// }
-
-// //GET Users followings
-// export const fetchFollowing = () => async dispatch => {
-//   dispatch(followingLoading());
-//   const QUERY = JSON.parse(localStorage.getItem("id"));
-//   getHelper(`users/following/${QUERY}`)
-//     .then(response => {
-//       dispatch(followingSuccess(response));
-//       return response.follow
-//     })
-//     .then(response => {
-//       dispatch(storyLoading());
-//       let storageId = JSON.parse(localStorage.getItem('id'))
-//       let nss = response.filter(us=> us.id.stories[0] && us.id.stories.find(h => measure(h.timestamp) <= 24 && !h.views.some(v => v === storageId)))
-//       let ss = response.filter(us=> us.id.stories[0] && us.id.stories.every(h => measure(h.timestamp) <= 24 && h.views.some(v => v === storageId)))
-    
-//       let measureNoSeenStory = !nss ? null : nss.map(u=>u.id.stories.filter(s=>measure(s.timestamp) <= 24))
-//       let filterMeasureNoSeenStory = measureNoSeenStory.filter(n => n.length > 0)
-//       let measureSeenStory = !ss ? null : ss.map(u=>u.id.stories.filter(s=>measure(s.timestamp) <= 24))
-//       let filterMeasureSeenStory = measureSeenStory.filter(n => n.length > 0)
-//       const storyStore = {
-//         users: {
-//           noSeen: nss,
-//           seen: ss
-//         },
-//         stories: {
-//           noSeen: filterMeasureNoSeenStory,
-//           seen: filterMeasureSeenStory
-//         }
-//       }
-//       return storyStore
-//     })
-//     .then(list => {
-//       dispatch(receiveStory(list));
-//     })
-//     .catch(error => dispatch(followingError(error.message)))
-
-// }
-// export const followingLoading = () => {
-//   return {
-//     type: ActionTypes.FOLLOWING_LOADING
-//   }
-// }
-
-// export const followingSuccess = (following) => {
-//   return {
-//     type: ActionTypes.FOLLOWING_SUCCESS,
-//     payload: following
-//   }
-// }
-
-// export const followingError = (message) => {
-//   return {
-//     type: ActionTypes.FOLLOWING_ERROR,
-//     ERR: message
-//   }
-// }
-
-// //CHANGE THE NOTIFICATION STATUS OF REDUX STORE
-
-// export const readStatusHandle = () => {
-//   return {
-//     type: ActionTypes.NOTIFICATION_STATUS
-//   }
-// }
-// export const handleNotificationStatus = () => (dispatch) => {
-//   dispatch(readStatusHandle());
-// }
-
-
-// //COMMENTS POST
-
-// export const commentsPost = dataComment => async dispatch => {
-//   const newComment = {
-//     comment: dataComment.comment,
-//     author: dataComment.author,
-//     image: dataComment.image
-//   };
-//   try {
-//     let messege = await postHelperBody('comments/post-comment', newComment);
-//     return messege
-//   } catch (error) {
-//     dispatch(startFailed(error.message))
-//   }
-//   //postHelperBody('comments/post-comment', newComment)
-//   // .then(response => {
-//   //   console.log("333333333", response);
-//   //   return response
-//   // })
-//   // .catch(error => dispatch(startFailed(error.message)));
-// }
-
-// // LIKE POST
-// export const postImageLike = (imageid, usersData) => async (dispatch) => {
-//   var DATA = {
-//     id: await usersData.id,
-//     liked: await usersData.liked
-//   }
-// try {
-//   let response = await postHelperBody(`likes/post-i-like-it/${imageid}`, DATA)
-//   return response
-// } catch (error) {
-//   console.log(error.message)
-// }
-//   // postHelperBody(`likes/post-i-like-it/${imageid}`, DATA)
-//   // .then(like => { 
-//   //   return like
-//   // }) //dispatch(addFavorites(favorites)); })
-//   // .catch(error => console.log(error.message))//dispatch(favoritesFailed(error.message)));
-// }
-// export const postVideoLike = (videoid, usersData) => async (dispatch) => {
-//   var DATA = {
-//     id: await usersData.id,
-//     liked: await usersData.liked
-//   }
-//   try {
-//     let response = await postHelperBody(`likes/post-i-like-it-video/${videoid}`, DATA)
-//     return response
-//   } catch (error) {
-//     console.log(error.message)
-//   }
-// }
-
-// export const fetchLikes = (userId, imgId) => async dispatch => {
-//   getHelper(`likes/get-i-like-it/${userId}/${imgId}`)
-//     .then(likes => dispatch(addlikes(likes)))
-//     .catch(error => dispatch(likesFailed(error.message)));
-// }
-// export const fetchVideoLikes = (userId, imgId) => async dispatch => {
-//   getHelper(`likes/get-i-like-it-video/${userId}/${imgId}`)
-//     .then(likes => dispatch(addlikes(likes)))
-//     .catch(error => dispatch(likesFailed(error.message)));
-// }
-// export const likesLoading = () => ({
-//   type: ActionTypes.LIKES_LOADING
-// });
-
-// export const likesFailed = (errmess) => ({
-//   type: ActionTypes.LIKES_FAILED,
-//   payload: errmess
-// });
-
-// export const addlikes = (likes) => ({
-//   type: ActionTypes.LIKES_ADD,
-//   payload: likes
-// });
