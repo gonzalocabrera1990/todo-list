@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { countries } from '../shared/countries';
 
-import { useNavigate } from 'react-router-dom';
+import {  Link, useNavigate } from 'react-router-dom';
 
 function SignUp(props:any) {
   const [dataForm, setDataForm] = useState({
@@ -139,20 +139,42 @@ function SignUp(props:any) {
       
     const country = countries.map((c, index) => <option key={index}>{c}</option>)
   return (
-    <div className="wraper-login">
-      <div className="container">
+    <div className="auth-grap">
+    <div className="auth-container data-form-back">
+      {/* <div className="container">
         <div className="">
           <h1>SignUp</h1>
         </div>
-      </div>
+      </div> */}
+      {/* Lado izquierdo (Leyenda y redirección) */}
+      <div className="auth-sidebar">
+        {/* Versión de escritorio */}
+        <div className="desktop-content">
+          <h2>¡Bienvenido de nuevo!</h2>
+          <p>Regístrate para comenzar a disfrutar de todas nuestras funcionalidades exclusivas.</p>
+          <div className="redirect-box">
+            <span>¿Ya tienes una cuenta?</span>
+            <Link to={`/login`} className="btn-secondary">
+              Iniciar sesión
+            </Link>
+          </div>
+        </div>
 
-      <div className="data-form">
+    {/* Versión simplificada para móviles (se oculta en desktop) */}
+        <div className="mobile-content">
+          <h2>Sign Up</h2>
+          <button onClick={() => navigate('/login')} className="btn-link">
+            ¿Ya tienes cuenta? Inicia sesión
+          </button>
+        </div>
+      </div>
+      <div className="data-form data-form-sign">
         <form onSubmit={onSubmit}  className="">
           <div className="input-container" >
             <label htmlFor="username" >
               Email
             </label>
-            <div >
+            <div className="input-container-child" >
               <input
                 type="email"
                 id="username"
@@ -171,7 +193,7 @@ function SignUp(props:any) {
             <label htmlFor="password" >
               Password
             </label>
-            <div >
+            <div className="input-container-child" >
               <input
                 type="password"
                 id="password"
@@ -189,7 +211,7 @@ function SignUp(props:any) {
             <label htmlFor="repeatpassword" >
               Repeat Password
             </label>
-            <div >
+            <div className="input-container-child" >
               <input
                 type="password"
                 id="repeatpassword"
@@ -207,7 +229,7 @@ function SignUp(props:any) {
             <label htmlFor="firstname" >
               Nombre
             </label>
-            <div >
+            <div className="input-container-child" >
               <input
                 type="text"
                 id="firstname"
@@ -226,7 +248,7 @@ function SignUp(props:any) {
             <label htmlFor="lastname" >
               Apellido
             </label>
-            <div >
+            <div className="input-container-child" >
               <input
                 type="text"
                 id="lastname"
@@ -245,7 +267,7 @@ function SignUp(props:any) {
             <label htmlFor="gender" >
               Gender
             </label>
-            <div >
+            <div className="input-container-child" >
               <select
                 id="gender"
                 name="gender"
@@ -263,7 +285,7 @@ function SignUp(props:any) {
             <label htmlFor="date" >
               Birthdate
             </label>
-            <div >
+            <div className="input-container-child" >
               <input
                 type="date"
                 id="date"
@@ -278,7 +300,7 @@ function SignUp(props:any) {
             <label htmlFor="country" >
               Country
             </label>
-            <div >
+            <div className="input-container-child-country" >
               <select
                 id="country"
                 name="country"
@@ -288,20 +310,20 @@ function SignUp(props:any) {
               >
                 {country}
               </select>
-            </div>
-            <div>
-              {
+                  {
                 enableButton
                   ?
-                  <button type="submit" className="bg-success border-0" >Send</button>
+                  <button type="submit" className="border-0" >Send</button>
                   :
-                  <button disabled >Send</button>
+                  <button disabled className="disabled-button" >Send</button>
               }
-
+            </div>
+            <div>
             </div>
           </div>
         </form>
       </div>
+    </div>
     </div>
   );
 }
