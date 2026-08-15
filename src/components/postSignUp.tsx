@@ -13,14 +13,14 @@ export default function PostSignUp(props: Props) {
   }, [props.signup])
   if (loading) {
     return (
-      <div >
+      <div className="post-signup-container">
         <Loading />
       </div>
     )
   }
   else {
     return (
-      <div className="container">
+      <div className="post-signup-container">
         <div className="row">
           <h3 className="col-12 text-center">{props.signup.successMess}</h3>
         </div>
