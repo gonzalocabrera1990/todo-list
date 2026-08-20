@@ -1,17 +1,15 @@
 import * as ActionTypes from "./ActionTypes";
-type State = {
-  isLoading: boolean;
-  errMess: string | null;
-  user: any| null;
-}
+import { AppAction } from "../types/redux/actions";
+import { UserState } from "../types/redux/state";
+
 export const User = (
-  state:State = {
+  state: UserState = {
     isLoading: true,
     errMess: null,
     user: null
   },
-  action:any
-) => {
+  action: AppAction
+): UserState => {
   switch (action.type) {
     case ActionTypes.USER_SUCCESS:
       return { ...state, isLoading: false, errMess: null, user: action.user };
@@ -19,7 +17,7 @@ export const User = (
     case ActionTypes.USER_LOADING:
       return { ...state, isLoading: true, errMess: null, user: null };
 
-      case ActionTypes.USER_CHECK:
+    case ActionTypes.USER_CHECK:
       return { ...state, isLoading: false, errMess: null, user: null };
 
     case ActionTypes.USER_ERROR:

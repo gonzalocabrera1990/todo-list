@@ -3,38 +3,43 @@ import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { addClassListEvent } from "../helpers/libs";
 import { getHelper } from '../redux/fetchsHelpers';
 import { baseUrl } from '../shared/baseUrl';
+import { GroupViewsProps, Task, User, Group } from '../types';
 
-
-interface Props {
-  tasks: any;
-  updateTaskGroup: any;
-  checkTask: any;
-  sendGroupTask: any;
-  addUserGroup: any;
-  deleteListGroup: any;
-  deleteUserGroup: any;
-  deleteTaskGroup: any;
-  backgrounds: any;
+interface GroupTaskState {
+  description: string;
+  appointed: User | null;
+  due: string;
 }
-export default function GroupView(props: Props) {
-  const { groupId } = useParams()
-  const [group, setGroup] = useState<any>(null)
-  const [taskValue, settaskValue] = useState()
+
+interface GroupUpdateValue {
+  open: boolean;
+  description: string;
+  _id: string | null;
+  task: Task | null;
+  done: boolean | null;
+  seen: boolean | null;
+  appointed: User | null;
+  oldUser: string | null;
+  due: string | null;
+}
+
+export default function GroupView(props: GroupViewsProps) {
+  const { groupId } = useParams<{ groupId: string }>()
+  const [group, setGroup] = useState<Group | null>(null)
   const [membersActive, setMembersActive] = useState(false)
   const [tasksActive, setTasksActive] = useState(false)
 
-
   const [deleteGroupConfirmation, setDeleteGroupConfirmation] = useState(false)
 
-  const [search, setSearch] = useState<any>(null);
-  const [searchAssing, setSearchAssign] = useState<any>(null);
-  const [groupTask, setGroupTask] = useState<any>({
+  const [search, setSearch] = useState<User[] | null>(null);
+  const [searchAssing, setSearchAssign] = useState<User[] | null>(null);
+  const [groupTask, setGroupTask] = useState<GroupTaskState>({
     description: "",
     appointed: null,
     due: ""
   });
 
-  const [updateValue, setUpdateValue] = useState<any>({
+  const [updateValue, setUpdateValue] = useState<GroupUpdateValue>({
     open: false,
     description: '',
     _id: null,
@@ -45,140 +50,133 @@ export default function GroupView(props: Props) {
     oldUser: null,
     due: null
   })
-  const [deleteListConfirmation, setDeleteListConfirmation] = useState(false)
   const [deleteConfirmation, setDeleteConfirmation] = useState(false)
-  const [searchLoading, setSearchLoading] = useState(false);
   const { pathname } = useLocation()
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("id") || '')
+
   useEffect(() => {
     if (props.tasks) {
-      setGroup(props.tasks.groups.filter((group: any) => (group._id == groupId))[0])
-      setSearchAssign(props.tasks.groups.members)
-      console.log(props.tasks.groups);
-
+      const foundGroup = props.tasks.groups.filter((grp) => (grp._id == groupId))[0]
+      setGroup(foundGroup || null)
+      if (foundGroup) {
+        setSearchAssign(foundGroup.members)
+      }
     }
   }, [props.tasks, groupId])
+
   useEffect(() => {
     if (props.backgrounds) {
-      const element: any = document.querySelector('.list-container')
+      const element = document.querySelector<HTMLElement>('.list-container')
       const path = pathname.split('/')[1]
       const backgroundType = path == "list-view" ? "listcreator" : path == "group-view" ? "groupcreator" : path
-      element.style.backgroundColor = props.backgrounds[backgroundType]
+      if (element) {
+        element.style.backgroundColor = props.backgrounds[backgroundType]
+      }
     }
   }, [props.backgrounds])
-  const submit = () => {
-    let group = {
-      name: taskValue,
-      leader: JSON.parse(localStorage.getItem("id") || '')
-    }
-    // props.createGroup(group, group.leader)
-  }
-  const handleSearch = (e: any) => {
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    setSearchLoading(true)
     const QUERY = e.target.value;
     if (QUERY.length) {
       return getHelper(`search/app-members?q=${QUERY}`)
-        .then(json => {
+        .then((json: User[]) => {
           setSearch(json)
-          setSearchLoading(false)
-          console.log(json);
-          console.log(json.length);
         })
-        .catch(err => {
+        .catch((err: Error) => {
           console.log(err)
         })
     } else {
       setSearch(null)
     }
   }
-  const controlState = (e: any) => {
-    const target = e.target;
-    const value = target.value;
-    settaskValue(value)
-  }
+
   const setMembers = () => {
     setTasksActive(false)
     setMembersActive(true)
   }
+
   const setTasks = () => {
     setMembersActive(false)
     setTasksActive(true)
-    console.log("membersActive", membersActive);
-    console.log("tasksActive", tasksActive);
   }
+
   const resetGroup = () => {
     setMembersActive(false)
     setTasksActive(false)
-    console.log("membersActive", membersActive);
-    console.log("tasksActive", tasksActive);
   }
-  const searchAssignUser = (e: any) => {
-    let name = e.target.value
-    let regex = new RegExp(name, 'i')
-    if (name.length) {
-      setSearchAssign(group.members.filter((user: any) => regex.test(user.usuario)))
+
+  const searchAssignUser = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const name = e.target.value
+    const regex = new RegExp(name, 'i')
+    if (name.length && group) {
+      setSearchAssign(group.members.filter((usr) => regex.test(usr.username)))
     } else {
       setSearchAssign(null)
     }
   }
-  const handleChange = (e: any) => {
-    let desc = e.target.value
-    console.log(desc);
-    setGroupTask((prevstate: any) => ({
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const desc = e.target.value
+    setGroupTask((prevstate) => ({
       ...prevstate,
       description: desc
     }))
   }
+
   const sendTask = () => {
-    if (groupTask.description && groupTask.appointed && groupTask.due) {
+    if (groupTask.description && groupTask.appointed && groupTask.due && group) {
       const taskGroupData = {
         description: groupTask.description,
         appointed: groupTask.appointed._id,
         due: groupTask.due,
         group: group._id
       }
-
       props.sendGroupTask(user, group._id, taskGroupData)
     }
   }
-  const updateTasks = (obj: any) => {
-    setUpdateValue((prev: any) => ({
+
+  const updateTasks = (obj: Task) => {
+    setUpdateValue((prev) => ({
       task: obj,
       _id: obj._id,
       description: obj.description,
       done: obj.done,
-      due: obj.due,
-      seen: obj.seen,
-      appointed: obj.appointed,
-      oldUser: obj.appointed._id,
+      due: obj.due || null,
+      seen: obj.seen || null,
+      appointed: obj.appointed || null,
+      oldUser: obj.appointed?._id || null,
       open: prev._id == obj._id && prev.open ? false : true
     }))
   }
-  const submitUpdate = () => {
-    let task = {
+
+  const submitUpdate = (e?: React.FormEvent<HTMLFormElement>) => {
+    e?.preventDefault()
+    if (!group || !updateValue.task) return
+    const task = {
       _id: updateValue.task._id,
       description: updateValue.description,
-      done: updateValue.done,
-      due: updateValue.due,
+      done: updateValue.done!,
+      due: updateValue.due!,
       seen: false,
-      appointed: updateValue.appointed,
+      appointed: updateValue.appointed!,
       group: group._id
     }
     setSearchAssign(null)
-    props.updateTaskGroup(user, updateValue.oldUser, task)
+    props.updateTaskGroup(user, updateValue.oldUser!, task)
   }
+
   const markDone = () => {
-    setUpdateValue((prev: any) => ({
+    setUpdateValue((prev) => ({
       ...prev,
       done: !prev.done
     }))
-
   }
+
   const setNull = () => {
-    setUpdateValue((prev: any) => ({
+    setUpdateValue((prev) => ({
       open: false,
       description: '',
       _id: null,
@@ -191,36 +189,40 @@ export default function GroupView(props: Props) {
     }))
     setSearchAssign(null)
   }
-  const controlUpdate = (e: any) => {
-    const target = e.target;
-    const name = target.name;
-    const value = target.value;
-    setUpdateValue((prev: any) => ({
+
+  const controlUpdate = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setUpdateValue((prev) => ({
       ...prev,
       [name]: value
     }))
   }
+
   const deleteTask = () => {
     setSearchAssign(null)
-    props.deleteTaskGroup(user, updateValue.appointed._id, group._id, updateValue._id)
+    props.deleteTaskGroup(user, updateValue.appointed!._id, group!._id, updateValue._id!)
     setNull()
   }
+
   const deleteUserGroup = (item: string) => {
-    props.deleteUserGroup(user, item, group._id)
-  }
-  const deleteGroup = () => {
-    props.deleteListGroup("group-delete", user, group._id)
-    return navigate("/groupcreator")
-  }
-  const doneTasks = (task: any) => {
-    task.done = true
-    props.checkTask("assingTasks-done", user, task)
+    props.deleteUserGroup(user, item, group!._id)
   }
 
-  const unDoneTasks = (task: any) => {
-    task.done = false
-    props.checkTask("assingTasks-done", user, task)
+  const deleteGroup = () => {
+    props.deleteListGroup("group-delete", user, group!._id)
+    return navigate("/groupcreator")
   }
+
+  const doneTasks = (task: Task) => {
+    const updatedTask = { ...task, done: true }
+    props.checkTask("assingTasks-done", user, updatedTask)
+  }
+
+  const unDoneTasks = (task: Task) => {
+    const updatedTask = { ...task, done: false }
+    props.checkTask("assingTasks-done", user, updatedTask)
+  }
+
   return (
     <div className="list-container">
       <div className="title-container" >
@@ -269,7 +271,7 @@ export default function GroupView(props: Props) {
                       <h3>Lider</h3>
                       <div className='create-task-user'>
                         <div className='create-task-user-image'>
-                          <img src={baseUrl + `${group.leader.image.filename}`} alt="" />
+                          <img src={baseUrl + `${group.leader.image?.filename}`} alt="" />
                         </div>
                         <div className='create-task-user-name'>
                           {group.leader.username}
@@ -278,11 +280,11 @@ export default function GroupView(props: Props) {
                       <h3>Miembros</h3>
                       <div className='group-members-container'>
                         {group.members.length ?
-                          group.members.map((item: any) => {
+                          group.members.map((item) => {
                             return (
                               <div className='create-task-user' key={item._id}>
                                 <div className='create-task-user-image'>
-                                  <img src={baseUrl + `${item.image.filename}`} alt="" />
+                                  <img src={baseUrl + `${item.image?.filename}`} alt="" />
                                 </div>
                                 <div className='create-task-user-name'>
                                   {item.username}
@@ -309,13 +311,13 @@ export default function GroupView(props: Props) {
                         <div className='create-task-inputs'>
                           <div className="group-input-create">
                             <label htmlFor="description">Descripción</label>
-                            <input type="text" name="description" id="description" placeholder="Descripcion de la tarea" value={groupTask.description} onChange={(e: any) => handleChange(e)} />
+                            <input type="text" name="description" id="description" placeholder="Descripcion de la tarea" value={groupTask.description} onChange={(e) => handleChange(e)} />
                           </div>
                           <div className="group-input-create">
                             <label htmlFor="member">Miembro</label>
                             {!groupTask.appointed ?
                               <input type="text" name="" id="member" placeholder="Agregar miembro" onChange={(e) => searchAssignUser(e)} />
-                              : <div className='user-picked' ><span>{groupTask.appointed.username}</span><span className="bi bi-x-circle cursor" onClick={() => setGroupTask((prevstate: any) => ({
+                              : <div className='user-picked'><span>{groupTask.appointed.username}</span><span className="bi bi-x-circle cursor" onClick={() => setGroupTask((prevstate) => ({
                                 ...prevstate,
                                 appointed: null
                               }))}></span></div>
@@ -327,7 +329,7 @@ export default function GroupView(props: Props) {
                               id="date"
                               name="date"
                               value={groupTask.due}
-                              onChange={(e) => setGroupTask((prevstate: any) => ({
+                              onChange={(e) => setGroupTask((prevstate) => ({
                                 ...prevstate,
                                 due: e.target.value
                               }))} />
@@ -340,17 +342,17 @@ export default function GroupView(props: Props) {
                       <div className='create-task-body'>
                         <div className='create-task-users'>
                           {
-                            searchAssing ? searchAssing.map((user: any) => {
+                            searchAssing ? searchAssing.map((usr) => {
                               return (
-                                <div onClick={() => setGroupTask((prevstate: any) => ({
+                                <div onClick={() => setGroupTask((prevstate) => ({
                                   ...prevstate,
-                                  appointed: user
-                                }))} key={user._id} className='create-task-user'>
+                                  appointed: usr
+                                }))} key={usr._id} className='create-task-user'>
                                   <div className='create-task-user-image'>
-                                    <img src={baseUrl + `${user.image.filename}`} alt="" />
+                                    <img src={baseUrl + `${usr.image?.filename}`} alt="" />
                                   </div>
                                   <div className='create-task-user-name'>
-                                    {user.username}
+                                    {usr.username}
                                   </div>
                                 </div>
                               )
@@ -365,21 +367,19 @@ export default function GroupView(props: Props) {
                     search ?
                       search!.length ?
 
-                        search.map((item: any) => {
-                          console.log("item._id != user", item._id != user);
-
+                        search.map((item) => {
                           if (item._id != user) {
                             return (
                               <div className="search-item" key={item._id}>
                                 <div className="search-description">
                                   <div className="search-item-image">
-                                    <img className="" src={baseUrl + item.image.filename} alt="item" />
+                                    <img className="" src={baseUrl + (item.image?.filename || '')} alt="item" />
                                   </div>
                                   <div className="search-item-name">
                                     <span>{`${item.username}`}</span>
                                   </div>
                                 </div>
-                                {group.members.length && group.members.some((us: any) => us._id == item._id) ?
+                                {group.members.length && group.members.some((us) => us._id == item._id) ?
                                   <span className="bi bi-check"></span>
                                   :
                                   <span className="bi bi-plus cursor" onClick={() => props.addUserGroup(user, group._id, item._id)}></span>
@@ -387,6 +387,7 @@ export default function GroupView(props: Props) {
                               </div>
                             )
                           }
+                          return null
                         })
                         :
                         <div className="img-container" >
@@ -421,7 +422,7 @@ export default function GroupView(props: Props) {
                                 name="due"
                                 placeholder="Birth"
                                 onChange={(e) => controlUpdate(e)}
-                                value={updateValue.due}
+                                value={updateValue.due || ''}
                               />
                             </div>
                             <div className="input-container-update">
@@ -434,7 +435,7 @@ export default function GroupView(props: Props) {
                               <label htmlFor="member">Miembro</label>
                               {!updateValue.appointed ?
                                 <input type="text" name="" id="member" placeholder="Agregar miembro" onChange={(e) => searchAssignUser(e)} />
-                                : <div className='user-picked' ><span>{updateValue.appointed.username}</span><span className="bi bi-x-circle cursor" onClick={() => setUpdateValue((prevstate: any) => ({
+                                : <div className='user-picked'><span>{updateValue.appointed.username}</span><span className="bi bi-x-circle cursor" onClick={() => setUpdateValue((prevstate) => ({
                                   ...prevstate,
                                   appointed: null
                                 }))}></span></div>
@@ -442,17 +443,17 @@ export default function GroupView(props: Props) {
                             </div>
                             <div className='update-task-search'>
                               {
-                                searchAssing ? searchAssing.map((user: any) => {
+                                searchAssing ? searchAssing.map((usr) => {
                                   return (
-                                    <div onClick={() => setUpdateValue((prevstate: any) => ({
+                                    <div onClick={() => setUpdateValue((prevstate) => ({
                                       ...prevstate,
-                                      appointed: user
-                                    }))} key={user._id} className='update-task-user'>
+                                      appointed: usr
+                                    }))} key={usr._id} className='update-task-user'>
                                       <div className='update-task-user-image'>
-                                        <img src={baseUrl + `${user.image.filename}`} alt="" />
+                                        <img src={baseUrl + `${usr.image?.filename}`} alt="" />
                                       </div>
                                       <div className='update-task-user-name'>
-                                        {user.username}
+                                        {usr.username}
                                       </div>
                                     </div>
                                   )
@@ -477,12 +478,12 @@ export default function GroupView(props: Props) {
                           </form>
                           :
                           <div className="tasks-container" >
-                            {group.tasks.map((item: any) => {
+                            {group.tasks.map((item) => {
                               return (
                                 <div className="task-item" key={item._id}>
                                   <div className="task-description">
                                     {
-                                      item.appointed._id == user ?
+                                      item.appointed?._id == user ?
                                         item.done ?
                                           <span className="done-mark bi bi-check done-mark-ckeck cursor" onClick={() => unDoneTasks(item)} ></span>
                                           :
@@ -495,7 +496,7 @@ export default function GroupView(props: Props) {
                                     }
                                     <div>
                                       <div>{item.description}</div>
-                                      <span>{item.appointed.username}</span>
+                                      <span>{item.appointed?.username}</span>
                                     </div>
                                   </div>
                                   <div className='due-item'>
@@ -521,7 +522,6 @@ export default function GroupView(props: Props) {
             </div>
             :
 
-            // para los no lider
             <div className="group-container-list" >
               <div className="group-item" >
                 <div className="group-description">
@@ -530,7 +530,6 @@ export default function GroupView(props: Props) {
                 <div className="group-bi">
                   <span className="bi bi-people-fill cursor" onClick={() => setMembers()}></span>
                 </div>
-
               </div>
 
               {!group.tasks ? null :
@@ -540,7 +539,7 @@ export default function GroupView(props: Props) {
                       <h3>Lider</h3>
                       <div className='create-task-user'>
                         <div className='create-task-user-image'>
-                          <img src={baseUrl + `${group.leader.image.filename}`} alt="" />
+                          <img src={baseUrl + `${group.leader.image?.filename}`} alt="" />
                         </div>
                         <div className='create-task-user-name'>
                           {group.leader.username}
@@ -549,11 +548,11 @@ export default function GroupView(props: Props) {
                       <h3>Miembros</h3>
                       <div className='group-members-container'>
                         {group.members.length ?
-                          group.members.map((item: any) => {
+                          group.members.map((item) => {
                             return (
                               <div className='create-task-user' key={item._id}>
                                 <div className='create-task-user-image'>
-                                  <img src={baseUrl + `${item.image.filename}`} alt="" />
+                                  <img src={baseUrl + `${item.image?.filename}`} alt="" />
                                 </div>
                                 <div className='create-task-user-name'>
                                   {item.username}
@@ -574,41 +573,14 @@ export default function GroupView(props: Props) {
                   }
 
                   {!tasksActive && !membersActive ?
-                    // search ?
-                    //   search!.length ?
-
-                    //     search.map((item: any) => {
-                    //       return (
-                    //         <div className="search-item" key={item._id}>
-                    //           <div className="search-description">
-                    //             <div className="search-item-image">
-                    //               <img className="" src={baseUrl + item.image.filename} alt="item" />
-                    //             </div>
-                    //             <div className="search-item-name">
-                    //               <span>{`${item.username}`}</span>
-                    //             </div>
-                    //           </div>
-                    //           <span className="bi bi-plus cursor" onClick={() => addUserGroup(item._id)}></span>
-                    //         </div>
-                    //       )
-                    //     })
-                    //     :
-                    //     <div className="img-container" >
-                    //       <div className="icon-svg svg-today">
-                    //         <img src={'/backgrounds/no-result.svg'} alt="" />
-                    //         <span>Sin resultados.</span>
-                    //       </div>
-                    //     </div>
-
-                    //   :
                     group.tasks.length ?
                       <div className="tasks-container" >
-                        {group.tasks.map((item: any) => {
+                        {group.tasks.map((item) => {
                           return (
                             <div className="task-item" key={item._id}>
                               <div className="task-description">
                                 {
-                                  item.appointed._id == user ?
+                                  item.appointed?._id == user ?
                                     item.done ?
                                       <span className="done-mark bi bi-check done-mark-ckeck cursor" onClick={() => unDoneTasks(item)} ></span>
                                       :
@@ -621,7 +593,7 @@ export default function GroupView(props: Props) {
                                 }
                                 <div>
                                   <div>{item.description}</div>
-                                  <span>{item.appointed.username}</span>
+                                  <span>{item.appointed?.username}</span>
                                 </div>
                               </div>
                               <div >

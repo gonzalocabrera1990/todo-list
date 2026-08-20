@@ -6,7 +6,8 @@ export const Users = (
     errMess: null,
     users: null
   },
-  action
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  action: any
 ) => {
   switch (action.type) {
     case ActionTypes.USERS_SUCCESS:

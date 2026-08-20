@@ -1,17 +1,19 @@
 import * as ActionTypes from "./ActionTypes";
+import { AppAction } from "../types/redux/actions";
+import { SignupState } from "../types/redux/state";
 
 export const Signup = (
-  state = {
+  state: SignupState = {
     errMess: null,
     successMess: null
   },
-  action:any
-) => {
+  action: AppAction
+): SignupState => {
   switch (action.type) {
     case ActionTypes.SIGNUP_SUCCESS:
-      return { ...state, errMess: null, successMess: action.payload };
+      return { ...state, errMess: null, successMess: String(action.payload) };
     case ActionTypes.SIGNUP_FAILURE:
-      return { ...state, errMess: action.payload, successMess: null };
+      return { ...state, errMess: String(action.payload), successMess: null };
 
     default:
       return state;

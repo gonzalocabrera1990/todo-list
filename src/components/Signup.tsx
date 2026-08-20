@@ -1,10 +1,10 @@
 import { useState } from "react";
+import { Link, useNavigate } from 'react-router-dom';
+import { SignupProps, SignupFormData, TouchedState, SignupValidationErrors } from '../types';
 import { countries } from '../shared/countries';
 
-import {  Link, useNavigate } from 'react-router-dom';
-
-function SignUp(props:any) {
-  const [dataForm, setDataForm] = useState({
+function SignUp(props: SignupProps) {
+  const [dataForm, setDataForm] = useState<SignupFormData>({
     username: '',
     password: '',
     repeatpassword: '',
@@ -14,7 +14,7 @@ function SignUp(props:any) {
     date: '',
     country: ''
   })
-  const [touched, setTouched] = useState({
+  const [touched, setTouched] = useState<TouchedState>({
     password: false,
     username: false,
     repeatpassword: false,
@@ -22,28 +22,34 @@ function SignUp(props:any) {
     lastname: false
   })
 
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
-  const controlState = (e:any) => {
-    const target = e.target;
-    const value = target.value;
-    const name = target.name;
-    setDataForm((prevProps)=>({
+  const controlState = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setDataForm((prevProps) => ({
       ...prevProps,
       [name]: value
-    }))    
+    }))
   }
 
-  const handleBlur = (field:any) => (e:any) => {
-      setTouched((prevProps)=>({
-        ...prevProps,
-        [field]: true
-      })
-    )
+  const handleBlur = (field: keyof TouchedState) => () => {
+    setTouched((prevProps) => ({
+      ...prevProps,
+      [field]: true
+    }))
   }
 
-  const validar = ( username:string, password:string, repeatpassword:string,firstname:string,lastname:string, gender:string, date:string, country:string) => {
-    const error = {
+  const validar = (
+    username: string,
+    password: string,
+    repeatpassword: string,
+    firstname: string,
+    lastname: string,
+    gender: string,
+    date: string,
+    country: string
+  ): SignupValidationErrors => {
+    const error: SignupValidationErrors = {
       password: { err: "", valid: false },
       repeatpassword: { err: "", valid: false },
       username: { err: "", valid: false },
@@ -53,8 +59,7 @@ function SignUp(props:any) {
       date: false,
       country: false
     };
-  
-    
+
     const expreg = /^(\w{3,})@(gmail|hotmail|outlook).\b(com|info|web)\b/;
 
     if (touched.firstname && firstname.length < 1) {
@@ -73,12 +78,9 @@ function SignUp(props:any) {
       error.lastname.valid = true
     }
 
-
-
     if (touched.password && password.length < 4) {
       error.password.err =
         "The password is WEAK. It must be greater than 4 characters. We recommend alternating numbers and letters.";
-
     } else if (touched.password && password.length > 10) {
       error.password.err =
         "The password must be less than or equal to 10 characters. We recommend alternating numbers and letters.";
@@ -104,226 +106,183 @@ function SignUp(props:any) {
     if (gender !== 'Choose a gender ...' && gender !== "") {
       error.gender = true
     }
-    
+
     if (date !== "") {
       error.date = true
     }
     if (country !== "") {
       error.country = true
     }
-  
+
     return error;
   }
 
-  const onSubmit = (e:any) => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    props.signupUser(dataForm).then(() => {
-      navigate("/post-signup");
-    });
+    props.signupUser(dataForm)
+    navigate("/post-signup");
   };
 
+  const error = validar(
+    dataForm.username,
+    dataForm.password,
+    dataForm.repeatpassword,
+    dataForm.firstname,
+    dataForm.lastname,
+    dataForm.gender,
+    dataForm.date,
+    dataForm.country
+  );
+  const enableButton = error.username.valid && error.password.valid &&
+    error.repeatpassword.valid && error.firstname.valid && error.lastname.valid && error.gender &&
+    error.date && error.country ? true : false;
 
-    const error = validar(
-      dataForm.username,
-      dataForm.password,
-      dataForm.repeatpassword,
-      dataForm.firstname,
-      dataForm.lastname,
-      dataForm.gender,
-      dataForm.date,
-      dataForm.country
-    );
-    const enableButton = error.username.valid && error.password.valid &&
-      error.repeatpassword.valid && error.firstname.valid && error.lastname.valid && error.gender &&
-      error.date && error.country ? true : false;
-      
-    const country = countries.map((c, index) => <option key={index}>{c}</option>)
+  const country = countries.map((c: string, index: number) => <option key={index}>{c}</option>)
+
   return (
     <div className="auth-grap">
-    <div className="auth-container data-form-back">
-      {/* <div className="container">
-        <div className="">
-          <h1>SignUp</h1>
-        </div>
-      </div> */}
-      {/* Lado izquierdo (Leyenda y redirección) */}
-      <div className="auth-sidebar">
-        {/* Versión de escritorio */}
-        <div className="desktop-content">
-          <h2>¡Bienvenido de nuevo!</h2>
-          <p>Regístrate para comenzar a disfrutar de todas nuestras funcionalidades exclusivas.</p>
-          <div className="redirect-box">
-            <span>¿Ya tienes una cuenta?</span>
-            <Link to={`/login`} className="btn-secondary">
-              Iniciar sesión
-            </Link>
+      <div className="auth-container data-form-back">
+        <div className="auth-sidebar">
+          <div className="desktop-content">
+            <h2>¡Bienvenido de nuevo!</h2>
+            <p>Regístrate para comenzar a disfrutar de todas nuestras funcionalidades exclusivas.</p>
+            <div className="redirect-box">
+              <span>¿Ya tienes una cuenta?</span>
+              <Link to={`/login`} className="btn-secondary">
+                Iniciar sesión
+              </Link>
+            </div>
+          </div>
+          <div className="mobile-content">
+            <h2>Sign Up</h2>
+            <button onClick={() => navigate('/login')} className="btn-link">
+              ¿Ya tienes cuenta? Inicia sesión
+            </button>
           </div>
         </div>
-
-    {/* Versión simplificada para móviles (se oculta en desktop) */}
-        <div className="mobile-content">
-          <h2>Sign Up</h2>
-          <button onClick={() => navigate('/login')} className="btn-link">
-            ¿Ya tienes cuenta? Inicia sesión
-          </button>
+        <div className="data-form data-form-sign">
+          <form onSubmit={onSubmit} className="">
+            <div className="input-container">
+              <label htmlFor="username">Email</label>
+              <div className="input-container-child">
+                <input
+                  type="email"
+                  id="username"
+                  name="username"
+                  placeholder="example@mail.com"
+                  value={dataForm.username}
+                  onChange={controlState}
+                  onBlur={handleBlur("username")}
+                />
+              </div>
+            </div>
+            <div className="input-container">
+              <label htmlFor="password">Password</label>
+              <div className="input-container-child">
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="password"
+                  value={dataForm.password}
+                  onChange={controlState}
+                  onBlur={handleBlur("password")}
+                />
+              </div>
+            </div>
+            <div className="input-container">
+              <label htmlFor="repeatpassword">Repeat Password</label>
+              <div className="input-container-child">
+                <input
+                  type="password"
+                  id="repeatpassword"
+                  name="repeatpassword"
+                  placeholder="repeat contraseña"
+                  value={dataForm.repeatpassword}
+                  onChange={controlState}
+                  onBlur={handleBlur("repeatpassword")}
+                />
+              </div>
+            </div>
+            <div className="input-container">
+              <label htmlFor="firstname">Nombre</label>
+              <div className="input-container-child">
+                <input
+                  type="text"
+                  id="firstname"
+                  name="firstname"
+                  placeholder="firstname"
+                  value={dataForm.firstname}
+                  onChange={controlState}
+                  onBlur={handleBlur("firstname")}
+                />
+              </div>
+            </div>
+            <div className="input-container">
+              <label htmlFor="lastname">Apellido</label>
+              <div className="input-container-child">
+                <input
+                  type="text"
+                  id="lastname"
+                  name="lastname"
+                  placeholder="lastname"
+                  value={dataForm.lastname}
+                  onChange={controlState}
+                  onBlur={handleBlur("lastname")}
+                />
+              </div>
+            </div>
+            <div className="input-container">
+              <label htmlFor="gender">Gender</label>
+              <div className="input-container-child">
+                <select
+                  id="gender"
+                  name="gender"
+                  value={dataForm.gender}
+                  onChange={controlState}
+                >
+                  <option>Female</option>
+                  <option>Male</option>
+                  <option>Non-binary</option>
+                </select>
+              </div>
+            </div>
+            <div className="input-container">
+              <label htmlFor="date">Birthdate</label>
+              <div className="input-container-child">
+                <input
+                  type="date"
+                  id="date"
+                  name="date"
+                  placeholder="Birth"
+                  value={dataForm.date}
+                  onChange={controlState}
+                />
+              </div>
+            </div>
+            <div className="input-container">
+              <label htmlFor="country">Country</label>
+              <div className="input-container-child-country">
+                <select
+                  id="country"
+                  name="country"
+                  value={dataForm.country}
+                  onChange={controlState}
+                >
+                  {country}
+                </select>
+                {
+                  enableButton
+                    ?
+                    <button type="submit" className="border-0">Send</button>
+                    :
+                    <button disabled className="disabled-button">Send</button>
+                }
+              </div>
+            </div>
+          </form>
         </div>
       </div>
-      <div className="data-form data-form-sign">
-        <form onSubmit={onSubmit}  className="">
-          <div className="input-container" >
-            <label htmlFor="username" >
-              Email
-            </label>
-            <div className="input-container-child" >
-              <input
-                type="email"
-                id="username"
-                name="username"
-                placeholder="example@mail.com"
-                value={dataForm.username}
-                // valid={error.username.err === ""}
-                //invalid={error.username.err !== ""}
-                onChange={controlState}
-                onBlur={handleBlur("username")}
-              />
-              
-            </div>
-          </div>
-          <div className="input-container" >
-            <label htmlFor="password" >
-              Password
-            </label>
-            <div className="input-container-child" >
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="password"
-                value={dataForm.password}
-                // valid={error.password.err === ""}
-                // invalid={error.password.err !== ""}
-                onChange={controlState}
-                onBlur={handleBlur("password")}
-              />
-            </div>
-          </div>
-          <div className="input-container" >
-            <label htmlFor="repeatpassword" >
-              Repeat Password
-            </label>
-            <div className="input-container-child" >
-              <input
-                type="password"
-                id="repeatpassword"
-                name="repeatpassword"
-                placeholder="repeat contraseña"
-                value={dataForm.repeatpassword}
-                // valid={error.repeatpassword.err === ""}
-                // invalid={error.repeatpassword.err !== ""}
-                onChange={controlState}
-                onBlur={handleBlur("repeatpassword")}
-              />
-            </div>
-          </div>
-          <div className="input-container" >
-            <label htmlFor="firstname" >
-              Nombre
-            </label>
-            <div className="input-container-child" >
-              <input
-                type="text"
-                id="firstname"
-                name="firstname"
-                placeholder="firstname"
-                value={dataForm.firstname}
-                // valid={error.username.err === ""}
-                //invalid={error.username.err !== ""}
-                onChange={controlState}
-                onBlur={handleBlur("firstname")}
-              />
-              
-            </div>
-          </div>
-          <div className="input-container" >
-            <label htmlFor="lastname" >
-              Apellido
-            </label>
-            <div className="input-container-child" >
-              <input
-                type="text"
-                id="lastname"
-                name="lastname"
-                placeholder="lastname"
-                value={dataForm.lastname}
-                // valid={error.username.err === ""}
-                //invalid={error.username.err !== ""}
-                onChange={controlState}
-                onBlur={handleBlur("lastname")}
-              />
-              
-            </div>
-          </div>
-          <div className="input-container" >
-            <label htmlFor="gender" >
-              Gender
-            </label>
-            <div className="input-container-child" >
-              <select
-                id="gender"
-                name="gender"
-                value={dataForm.gender}
-                onChange={controlState}
-              >
-                <option>Choose a gender ...</option>
-                <option>Female</option>
-                <option>Male</option>
-                <option>Non-binary</option>
-              </select>
-            </div>
-          </div>
-          <div className="input-container" >
-            <label htmlFor="date" >
-              Birthdate
-            </label>
-            <div className="input-container-child" >
-              <input
-                type="date"
-                id="date"
-                name="date"
-                placeholder="Birth"
-                value={dataForm.date}
-                onChange={controlState}
-              />
-            </div>
-          </div>
-          <div className="input-container" >
-            <label htmlFor="country" >
-              Country
-            </label>
-            <div className="input-container-child-country" >
-              <select
-                id="country"
-                name="country"
-                placeholder="country"
-                value={dataForm.country}
-                onChange={controlState}
-              >
-                {country}
-              </select>
-                  {
-                enableButton
-                  ?
-                  <button type="submit" className="border-0" >Send</button>
-                  :
-                  <button disabled className="disabled-button" >Send</button>
-              }
-            </div>
-            <div>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
     </div>
   );
 }

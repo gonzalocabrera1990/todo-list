@@ -1,11 +1,11 @@
 import * as ActionTypes from './ActionTypes';
 
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const Notifications = (state = {
     isLoading: null,
     results: [],
     errMess: null,
-}, action) => {
+}, action: any) => {
     switch (action.type) {
         case ActionTypes.NOTIFICATION_LOADING:
             return {

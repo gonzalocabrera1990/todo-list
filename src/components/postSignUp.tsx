@@ -1,16 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Loading } from './Loading';
 import { Link } from 'react-router-dom';
+import { PostSignUpProps } from '../types';
 
-interface Props {
-  signup: any;
-}
-
-export default function PostSignUp(props: Props) {
+export default function PostSignUp(props: PostSignUpProps) {
   const [loading, setLoading] = useState(true)
+
   useEffect(() => {
     if (props.signup.successMess) setLoading(false)
   }, [props.signup])
+
   if (loading) {
     return (
       <div className="post-signup-container">
@@ -34,4 +33,4 @@ export default function PostSignUp(props: Props) {
       </div>
     );
   }
-};
+}
