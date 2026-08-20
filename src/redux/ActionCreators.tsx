@@ -493,7 +493,7 @@ export const receiveTaskError = (error:any) => {
     errMess: error
   };
 };
-export const imagenUser = (userID:string, image:any) => async (dispatch:any) => {
+export const imagenUser = (userID:string, image:any) => async (_dispatch:any) => {
   postHelperMedia(`imagen/profile-image-post/change/${userID}`, image)
     .then(() => {
       window.location.reload();

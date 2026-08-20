@@ -1,237 +1,223 @@
 import { useEffect, useState } from "react";
 import { addClassListEvent } from "../helpers/libs";
 import { useLocation } from 'react-router-dom';
+import { TodayProps, Task } from '../types';
 
-
-interface Props {
-    tasks: any;
-    createTask: any;
-    addFavTask: any;
-    updateTask: any;
-    checkTask: any;
-    deleteTask: any;
-    backgrounds: any;
+interface TodayUpdateValue {
+  open: boolean;
+  description: string;
+  _id: string | null;
+  task: Task | null;
+  done: boolean | null;
 }
-export default function TodayTasks(props: Props) {
-    const [tasks, setTasks] = useState<any>([])
-    const [taskValue, settaskValue] = useState()
-    const [deleteConfirmation, setDeleteConfirmation] = useState(false)
-    const [updateValue, setUpdateValue] = useState<any>({
-        open: false,
-        description: '',
-        _id: null,
-        task: null,
-        done: null
-    })
-    const IdUser = JSON.parse(localStorage.getItem("id") || '')
-    const { pathname } = useLocation()
 
-    useEffect(() => {
-        if (props.tasks) {
-            setTasks(props.tasks.todaytasks)
-        }
-    }, [])
+export default function TodayTasks(props: TodayProps) {
+  const [tasks, setTasks] = useState<Task[]>([])
+  const [taskValue, settaskValue] = useState<string>('')
+  const [deleteConfirmation, setDeleteConfirmation] = useState(false)
+  const [updateValue, setUpdateValue] = useState<TodayUpdateValue>({
+    open: false,
+    description: '',
+    _id: null,
+    task: null,
+    done: null
+  })
+  const IdUser = JSON.parse(localStorage.getItem("id") || '')
+  const { pathname } = useLocation()
 
-    useEffect(() => {
-        if (props.backgrounds) {
-            const element: any = document.querySelector('.importante-container')
-            const path = pathname.split('/')[1]
-            const backgroundType = path == "list-view" ? "listcreator" : path == "group-view" ? "groupcreator" : path
-            
-            element.style.backgroundColor = props.backgrounds[backgroundType]
-        }
-    }, [props.backgrounds])
-    const submit = () => {
-        let task = {
-            description: taskValue,
-            user: JSON.parse(localStorage.getItem("id") || '')
-        }
-        props.createTask(task, task.user)
+  useEffect(() => {
+    if (props.tasks) {
+      setTasks(props.tasks.todaytasks)
     }
+  }, [])
 
-    const addFavTaskSubmit = (obj: any) => {
-        let task = {
-            description: obj.description,
-            user: JSON.parse(localStorage.getItem("id") || '')
-        }
-        props.addFavTask(task, task.user, obj.id)
+  useEffect(() => {
+    if (props.backgrounds) {
+      const element = document.querySelector<HTMLElement>('.importante-container')
+      const path = pathname.split('/')[1]
+      const backgroundType = path == "list-view" ? "listcreator" : path == "group-view" ? "groupcreator" : path
+      if (element) {
+        element.style.backgroundColor = props.backgrounds[backgroundType]
+      }
     }
-    const submitUpdate = () => {
-        let task = {
-            _id: updateValue.task._id,
-            description: updateValue.description,
-            done: updateValue.done,
-            user: JSON.parse(localStorage.getItem("id") || '')
-        }
-        props.updateTask("update-task", task.user, task)
-    }
+  }, [props.backgrounds])
 
-    const controlState = (e: any) => {
-        const target = e.target;
-        const value = target.value;
-        settaskValue(value)
+  const submit = (e?: React.FormEvent<HTMLFormElement>) => {
+    e?.preventDefault()
+    const task = {
+      description: taskValue,
+      user: JSON.parse(localStorage.getItem("id") || '')
     }
+    props.createTask(task, task.user)
+  }
 
-    const updateTasks = (obj: any) => {
-        console.log(obj);
+  const addFavTaskSubmit = (obj: { id: string; description: string }) => {
+    const task = {
+      description: obj.description,
+      user: JSON.parse(localStorage.getItem("id") || '')
+    }
+    props.addFavTask(task, task.user, obj.id)
+  }
 
-        setUpdateValue((prev: any) => ({
-            task: obj,
-            _id: obj._id,
-            description: obj.description,
-            done: obj.done,
-            open: prev._id == obj._id && prev.open ? false : true
-        }))
+  const submitUpdate = (e?: React.FormEvent<HTMLFormElement>) => {
+    e?.preventDefault()
+    const task = {
+      _id: updateValue.task!._id,
+      description: updateValue.description,
+      done: updateValue.done!,
+      user: JSON.parse(localStorage.getItem("id") || '')
     }
-    const doneTasks = (obj: any) => {
-        let task = {
-            _id: obj._id,
-            description: obj.description,
-            done: true,
-            user: obj.user
-        }
-        props.checkTask("task-done", task.user, task)
-    }
-    const unDoneTasks = (obj: any) => {
-        let task = {
-            _id: obj._id,
-            description: obj.description,
-            done: false,
-            user: obj.user
-        }
-        props.checkTask("task-done", task.user, task)
-    }
-    const controlUpdate = (e: any) => {
-        const target = e.target;
-        const value = target.value;
-        setUpdateValue((prev: any) => ({
-            ...prev,
-            description: value
-        }))
+    props.updateTask("update-task", task.user, task)
+  }
 
-    }
-    const markDone = () => {
-        console.log("aaa");
+  const controlState = (e: React.ChangeEvent<HTMLInputElement>) => {
+    settaskValue(e.target.value)
+  }
 
-        setUpdateValue((prev: any) => ({
-            ...prev,
-            done: !prev.done
-        }))
+  const updateTasks = (obj: Task) => {
+    setUpdateValue((prev) => ({
+      task: obj,
+      _id: obj._id,
+      description: obj.description,
+      done: obj.done,
+      open: prev._id == obj._id && prev.open ? false : true
+    }))
+  }
 
+  const doneTasks = (obj: Task) => {
+    const task = {
+      _id: obj._id,
+      description: obj.description,
+      done: true,
+      user: obj.user!
     }
-    const deleteTask = () => {
-        props.deleteTask("delete-task", IdUser, updateValue._id)
-    }
+    props.checkTask("task-done", task.user, task)
+  }
 
-    const tareas = tasks.length
-        ?
-        <div className="tasks-container" >
-            {tasks.map((item: any) => {
-                return (
-                    <div className="task-item" key={item._id}>
-                        <div className="task-description">
-                            {
-                                item.done ?
-                                    <span className="done-mark bi bi-check done-mark-ckeck" onClick={() => unDoneTasks(item)} ></span>
-                                    :
-                                    <span className="done-mark" onClick={() => doneTasks(item)} ></span>
-                            }
-                            <div>{item.description}</div>
-                        </div>
-                        <div onClick={() => addFavTaskSubmit({ id: item._id, description: item.description })}>
-                            <span className="cursor bi bi-star"></span>
-                        </div>
-                        <div onClick={() => updateTasks(item)}>
-                            <span className="cursor bi bi-bar-chart-steps"></span>
-                        </div>
-                    </div>
-                )
-            }
-            )}
-        </div>
-        : <div className="img-container" >
-            <div className="icon-svg svg-today">
-                <img src={'/backgrounds/schedule.svg'} alt="" />
+  const unDoneTasks = (obj: Task) => {
+    const task = {
+      _id: obj._id,
+      description: obj.description,
+      done: false,
+      user: obj.user!
+    }
+    props.checkTask("task-done", task.user, task)
+  }
+
+  const controlUpdate = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setUpdateValue((prev) => ({
+      ...prev,
+      description: e.target.value
+    }))
+  }
+
+  const markDone = () => {
+    setUpdateValue((prev) => ({
+      ...prev,
+      done: !prev.done
+    }))
+  }
+
+  const deleteTask = () => {
+    props.deleteTask("delete-task", IdUser, updateValue._id!)
+  }
+
+  const tareas = tasks.length
+    ?
+    <div className="tasks-container" >
+      {tasks.map((item) => {
+        return (
+          <div className="task-item" key={item._id}>
+            <div className="task-description">
+              {
+                item.done ?
+                  <span className="done-mark bi bi-check done-mark-ckeck" onClick={() => unDoneTasks(item)} ></span>
+                  :
+                  <span className="done-mark" onClick={() => doneTasks(item)} ></span>
+              }
+              <div>{item.description}</div>
             </div>
-        </div>
-
-
-
-    return (
-        <div className="container-tasks">
-            <div className="importante-container">
-                <div className="title-container" >
-                    <div className="title-item" >
-                        <span className="bi bi-house-door"></span>
-                        <span>Tareas para hoy</span>
-                    </div>
-                    <div className="title-settings" onClick={addClassListEvent}>
-                        <span className="bi bi-columns-gap"></span>
-                    </div>
-                </div>
-                <>
-                    {tareas}
-                </>
-                <div className="input-add-task">
-                    <div className="input-container" >
-                        <form onSubmit={submit}>
-                            <input type="text" className="input-text-task" placeholder="Agregar tarea" onChange={(e) => controlState(e)} />
-                            <span className="bi bi-plus"></span>
-                            {/*<span className="bi bi-calendar-check-fill"></span>
-                            <input
-                            className="input-date-task"
-                            type="date"
-                            id="date"
-                            name="due"
-                            placeholder="Birth"
-                            onChange={(e) => controlState(e)}
-                            value={taskValue.due}
-                        // onChange={controlState}
-                        /> */}
-                        </form>
-                    </div>
-                </div>
+            <div onClick={() => addFavTaskSubmit({ id: item._id, description: item.description })}>
+              <span className="cursor bi bi-star"></span>
             </div>
-            {
-                updateValue.open ?
-                    <form className="update-tasks" onSubmit={submitUpdate}>
-                        <div className="input-container-update">
-                            <div className="update-description">
-                                {
-                                    updateValue.done ?
-                                        <span className="done-mark bi bi-check done-mark-ckeck" onClick={markDone}></span>
-                                        :
-                                        <span className="done-mark" onClick={markDone}></span>
-                                }
-                                <span>{updateValue.task ? updateValue.task.description : null}</span>
-                            </div>
-                            <span className="bi bi-star"></span>
-                        </div>
-                        <div className="input-container-update">
-                            <div className="input-label">
-                                <label htmlFor="description">Cambiar descripcion</label>
-                                <textarea id="description" value={updateValue.description} onChange={(e) => controlUpdate(e)} />
-                            </div>
-                        </div>
-                        <div className="update-buttons">
-                            {
-                                deleteConfirmation ?
-                                    <>
-                                        <span>¿Quiere eliminar esta tarea?</span>
-                                        <input value="Si" onClick={() => deleteTask()} />
-                                        <input value="No" onClick={() => setDeleteConfirmation(false)} />
-                                    </>
-                                    :
-                                    <>
-                                        <button type="submit" >Guardar</button>
-                                        <input type="button" value="Eliminar" onClick={() => setDeleteConfirmation(true)} />
-                                    </>
-                            }
-                        </div>
-                    </form>
+            <div onClick={() => updateTasks(item)}>
+              <span className="cursor bi bi-bar-chart-steps"></span>
+            </div>
+          </div>
+        )
+      }
+      )}
+    </div>
+    : <div className="img-container" >
+      <div className="icon-svg svg-today">
+        <img src={'/backgrounds/schedule.svg'} alt="" />
+      </div>
+    </div>
+
+  return (
+    <div className="container-tasks">
+      <div className="importante-container">
+        <div className="title-container" >
+          <div className="title-item" >
+            <span className="bi bi-house-door"></span>
+            <span>Tareas para hoy</span>
+          </div>
+          <div className="title-settings" onClick={addClassListEvent}>
+            <span className="bi bi-columns-gap"></span>
+          </div>
+        </div>
+        <>
+          {tareas}
+        </>
+        <div className="input-add-task">
+          <div className="input-container" >
+            <form onSubmit={submit}>
+              <input type="text" className="input-text-task" placeholder="Agregar tarea" onChange={(e) => controlState(e)} />
+              <span className="bi bi-plus"></span>
+            </form>
+          </div>
+        </div>
+      </div>
+      {
+        updateValue.open ?
+          <form className="update-tasks" onSubmit={submitUpdate}>
+            <div className="input-container-update">
+              <div className="update-description">
+                {
+                  updateValue.done ?
+                    <span className="done-mark bi bi-check done-mark-ckeck" onClick={markDone}></span>
                     :
-                    null
-            }
-        </div>
-    )
+                    <span className="done-mark" onClick={markDone}></span>
+                }
+                <span>{updateValue.task ? updateValue.task.description : null}</span>
+              </div>
+              <span className="bi bi-star"></span>
+            </div>
+            <div className="input-container-update">
+              <div className="input-label">
+                <label htmlFor="description">Cambiar descripcion</label>
+                <textarea id="description" value={updateValue.description} onChange={(e) => controlUpdate(e)} />
+              </div>
+            </div>
+            <div className="update-buttons">
+              {
+                deleteConfirmation ?
+                  <>
+                    <span>¿Quiere eliminar esta tarea?</span>
+                    <input value="Si" onClick={() => deleteTask()} />
+                    <input value="No" onClick={() => setDeleteConfirmation(false)} />
+                  </>
+                  :
+                  <>
+                    <button type="submit" >Guardar</button>
+                    <input type="button" value="Eliminar" onClick={() => setDeleteConfirmation(true)} />
+                  </>
+              }
+            </div>
+          </form>
+          :
+          null
+      }
+    </div>
+  )
 }

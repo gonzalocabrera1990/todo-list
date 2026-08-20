@@ -1,31 +1,22 @@
 import { useEffect } from 'react'
 import { addClassListEvent } from "../helpers/libs";
 import { useLocation } from 'react-router-dom';
+import { HomeProps } from '../types';
 
-interface Props {
-  user: any;
-  logoutUser: any;
-  backgrounds: any;
-}
-
-
-export default function Home(props: Props) {
-  console.log("PROPS", props.user);
+export default function Home(props: HomeProps) {
   const { pathname } = useLocation()
+
   useEffect(() => {
     if (props.backgrounds) {
-        const element:any = document.querySelector('.importante-container')
-        const path = pathname.split('/')[1]
-        const backgroundType = path == "list-view" ? "listcreator" : path == "group-view" ? "groupcreator" : path
-        console.log("element", element);
-        console.log("path", path);
-        console.log("backgroundType", backgroundType);
-        console.log("props.backgrounds[backgroundType]", props.backgrounds[backgroundType]);
-        
-       
+      const element = document.querySelector<HTMLElement>('.importante-container')
+      const path = pathname.split('/')[1]
+      const backgroundType = path == "list-view" ? "listcreator" : path == "group-view" ? "groupcreator" : path
+      if (element) {
         element.style.backgroundColor = props.backgrounds[backgroundType]
+      }
     }
-}, [props.backgrounds])
+  }, [props.backgrounds])
+
   return (
     <div className="importante-container">
       <div className="title-container" >
@@ -38,7 +29,6 @@ export default function Home(props: Props) {
         </div>
       </div>
       <div className="icon-svg svg-tasks">
-
       </div>
       <div className="input-add-task">
         <div className="input-container" >

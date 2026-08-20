@@ -1,35 +1,27 @@
 import * as ActionTypes from "./ActionTypes";
-type Session = {
-  isLoading: boolean;
-  isAuthenticated: boolean;
-  token: string | null;
-  errMess: string | null;
-  user: any;
-  id: string | null;
-}
-// The auth reducer. The starting state sets authentication
-// based on a token being in local storage. In a real app,
-// we would also want a util to check if the token is expired.
+import { AppAction } from "../types/redux/actions";
+import { AuthState } from "../types/redux/state";
+
 export const Auth = (
-  state:Session = {
+  state: AuthState = {
     isLoading: false,
     isAuthenticated: localStorage.getItem("token") ? true : false,
     token: localStorage.getItem("token"),
     user: localStorage.getItem("creds")
-      ? JSON.parse(localStorage.getItem("creds")|| '{}') 
+      ? JSON.parse(localStorage.getItem("creds") || '{}')
       : null,
     errMess: null,
     id: localStorage.getItem("id")
   },
-  action:any
-) => {
+  action: AppAction
+): AuthState => {
   switch (action.type) {
     case ActionTypes.TOKEN_LOADING:
       return {
         ...state,
         isLoading: true
       };
-      case ActionTypes.TOKEN_CHECK:
+    case ActionTypes.TOKEN_CHECK:
       return {
         ...state,
         isLoading: false
@@ -48,7 +40,7 @@ export const Auth = (
         isAuthenticated: true,
         errMess: "",
         token: action.token,
-        user: action.userdata.userdata
+        user: action.userdata.userdata as unknown as AuthState['user']
       };
     case ActionTypes.LOGIN_FAILURE:
       return {

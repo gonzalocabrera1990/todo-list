@@ -1,11 +1,4 @@
-import { useEffect } from 'react'
-// import {
-//   createBrowserRouter,
-//   RouterProvider,
-//   Navigate,
-//  BrowserRouter,
-//   BrowserRouter
-// } from "react-router-dom";
+import { useEffect } from 'react';
 import {
   Routes,
   Route,
@@ -60,65 +53,60 @@ import GroupView from './GroupViews';
 import ListsCreator from './ListCreate';
 import ListView from './ListViews';
 import SearchResults from './SearchResults';
+import { RootState } from '../types/redux/state';
+import { AppAction } from '../types/redux/actions';
+import { MainComponentProps } from '../types/components/props';
+import { Dispatch } from 'redux';
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: RootState) => {
   return {
     auth: state.auth,
     user: state.user,
     tasks: state.tasks,
     signup: state.signup,
     backgrounds: state.backgrounds
-    // notifications: state.notifications,
-    // imagen: state.imagen
   };
 };
 
-const mapDispatchToProps = (dispatch: any) => ({
-  loginUser: (creds: any) => dispatch(loginUser(creds)),
-  logoutUser: () => dispatch(logoutUser()),
-  signupUser: (User: any) => dispatch(signupUser(User)),
-  fetchUser: (id: any) => dispatch(fetchUser(id)),
-  createTask: (id: any, task: any) => dispatch(createTask(id, task)),
-  createDateTask: (id: any, task: any) => dispatch(createDateTask(id, task)),
-  createFavTask: (id: any, task: any) => dispatch(createFavTask(id, task)),
-  addFavTask: (taskk: any, userId: string, taskId: any) => dispatch(addFavTask(taskk, userId, taskId)),
-  dropFavTask: (taskk: any, userId: string, taskId: any) => dispatch(dropFavTask(taskk, userId, taskId)),
-  createGroup: (group: any, userId: string) => dispatch(createGroup(group, userId)),
-  sendGroupTask: (userId:string, groupid: string, task: any) => dispatch(sendGroupTask(userId, groupid, task)),
-  addUserGroup: (userId: string, groupId: string, adduserId: string) => dispatch(addUserGroup(userId,groupId, adduserId)),
-  deleteUserGroup: (userId: string, deleted: string,  groupId: string) => dispatch(deleteUserGroup(userId, deleted,  groupId)),
-  deleteTaskGroup: (userId: string, taskUser: string,  groupId: string, taskId: string) => dispatch(deleteTaskGroup(userId, taskUser,  groupId, taskId)),
+const mapDispatchToProps = (dispatch: Dispatch<AppAction>) => ({
+  loginUser: (creds: { username: string; password: string }) => dispatch(loginUser(creds) as any),
+  logoutUser: () => dispatch(logoutUser() as any),
+  signupUser: (User: { username: string; password: string; repeatpassword: string; firstname: string; lastname: string; gender: string; date: string; country: string }) => dispatch(signupUser(User) as any),
+  fetchUser: (id: string) => dispatch(fetchUser(id) as any),
+  createTask: (task: any, id: string) => dispatch(createTask(task, id) as any),
+  createDateTask: (task: any, id: string) => dispatch(createDateTask(task, id) as any),
+  createFavTask: (task: any, id: string) => dispatch(createFavTask(task, id) as any),
+  addFavTask: (taskk: any, userId: string, taskId: string) => dispatch(addFavTask(taskk, userId, taskId) as any),
+  dropFavTask: (taskk: any, userId: string, taskId: string) => dispatch(dropFavTask(taskk, userId, taskId) as any),
+  createGroup: (group: any, userId: string) => dispatch(createGroup(group, userId) as any),
+  sendGroupTask: (userId: string, groupid: string, task: any) => dispatch(sendGroupTask(userId, groupid, task) as any),
+  addUserGroup: (userId: string, groupId: string, adduserId: string) => dispatch(addUserGroup(userId, groupId, adduserId) as any),
+  deleteUserGroup: (userId: string, deleted: string, groupId: string) => dispatch(deleteUserGroup(userId, deleted, groupId) as any),
+  deleteTaskGroup: (userId: string, taskUser: string, groupId: string, taskId: string) => dispatch(deleteTaskGroup(userId, taskUser, groupId, taskId) as any),
 
-  createList: (list: any, userId: string) => dispatch(createList(list, userId)),
-  createTaskList: (userId: string, listId: any, data: any) => dispatch(createTaskList(userId, listId, data)),
-  updateTaskList: (userId: string, listId: any, data: any) => dispatch(updateTaskList(userId, listId, data)),
-  deleteTaskList: (userId: string, listId: string, taskId: string) => dispatch(deleteTaskList(userId, listId, taskId)),
-  imagenUser: (id: string, img: any) => dispatch(imagenUser(id, img)),
-  changeBackgrounds: (id: string, background: any) => dispatch(changeBackgrounds(id, background)),
-  search: (id: string, data: any) => dispatch(search(id, data)),
-  updateTask: (url: string, id: string, data: any) => dispatch(updateTask(url, id, data)),
-  checkTask: (url: string, id: string, data: any) => dispatch(checkTask(url, id, data)),
-  deleteTask: (url: string, id: string, taskid: any) => dispatch(deleteTask(url, id, taskid)),
-  checkGroupTask: (url: string, userId: string, listId: string, taskId: string) => dispatch(checkGroupTask(url, userId, listId, taskId)),
-  updateTaskGroup: ( id: string, oldUser: string, data: any) => dispatch(updateTaskGroup(id, oldUser, data)),
-  deleteListGroup: (url: string, userId: string, id: string) => dispatch(deleteListGroup(url, userId, id))
+  createList: (list: any, userId: string) => dispatch(createList(list, userId) as any),
+  createTaskList: (userId: string, listId: string, data: any) => dispatch(createTaskList(userId, listId, data) as any),
+  updateTaskList: (userId: string, listId: string, data: any) => dispatch(updateTaskList(userId, listId, data) as any),
+  deleteTaskList: (userId: string, listId: string, taskId: string) => dispatch(deleteTaskList(userId, listId, taskId) as any),
+  imagenUser: (id: string, img: FormData) => dispatch(imagenUser(id, img) as any),
+  changeBackgrounds: (id: string, background: string) => dispatch(changeBackgrounds(id, background) as any),
+  search: (id: string, data: any) => dispatch(search(id, data) as any),
+  updateTask: (url: string, id: string, data: any) => dispatch(updateTask(url, id, data) as any),
+  checkTask: (url: string, id: string, data: any) => dispatch(checkTask(url, id, data) as any),
+  deleteTask: (url: string, id: string, taskid: string) => dispatch(deleteTask(url, id, taskid) as any),
+  checkGroupTask: (url: string, userId: string, listId: string, taskId: string) => dispatch(checkGroupTask(url, userId, listId, taskId) as any),
+  updateTaskGroup: (id: string, oldUser: string, data: any) => dispatch(updateTaskGroup(id, oldUser, data) as any),
+  deleteListGroup: (url: string, userId: string, id: string) => dispatch(deleteListGroup(url, userId, id) as any)
 });
 
-function Main(props: any) {
+function Main(props: MainComponentProps) {
   useEffect(() => {
-    // const username = JSON.parse(localStorage.getItem("creds")|| '{}') 
     if (props.auth.isAuthenticated) {
-      const id = props.auth.user.username;
-      console.log('id', id);
-
+      const id = props.auth.user!.username;
       props.fetchUser(id);
     }
-    // props.fetchuser(username.username)
   }, [])
-  useEffect(() => {
-    <Navigate to="/home" />
-  }, [props.auth.isAuthenticated])
-  //const isAuthenticated = false
+
   const LoginPage = () => {
     return props.auth.isAuthenticated ? (
       <Navigate to="/home" />
@@ -126,6 +114,7 @@ function Main(props: any) {
       <Login loginUser={props.loginUser} />
     );
   };
+
   const SignupPage = () => {
     return props.auth.isAuthenticated ? (
       <Navigate to="/home" />
@@ -133,6 +122,7 @@ function Main(props: any) {
       <Signup signupUser={props.signupUser} />
     );
   };
+
   const PostSignUpAuth = () => {
     return props.auth.isAuthenticated ? (
       <Navigate to="/home" />
@@ -140,6 +130,7 @@ function Main(props: any) {
       <PostSignUp signup={props.signup} />
     );
   };
+
   const IndexPage = () => {
     return props.auth.isAuthenticated ? (
       <Navigate to="/home" />
@@ -148,17 +139,16 @@ function Main(props: any) {
     );
   };
 
-
-
   const NavbarPage = () => {
     return !props.auth.isAuthenticated ? (
       null
     ) : (
       <header>
-        <Navbar user={props.user} tasks={props.tasks.tasks} logoutUser={props.logoutUser} imagenUser={props.imagenUser}  search={props.search}/>
+        <Navbar user={props.user} tasks={props.tasks.tasks} logoutUser={props.logoutUser} imagenUser={props.imagenUser} search={props.search} />
       </header>
     );
   };
+
   const HomePage = () => {
     return !props.auth.isAuthenticated ? (
       <Navigate to="/" />
@@ -166,6 +156,7 @@ function Main(props: any) {
       <Home user={props.user} logoutUser={props.logoutUser} backgrounds={props.backgrounds.colors} />
     );
   };
+
   const ImportantsPage = () => {
     return !props.auth.isAuthenticated ? (
       <Navigate to="/" />
@@ -173,6 +164,7 @@ function Main(props: any) {
       <Importants tasks={props.tasks.tasks} createFavTask={props.createFavTask} dropFavTask={props.dropFavTask} updateTask={props.updateTask} checkTask={props.checkTask} deleteTask={props.deleteTask} backgrounds={props.backgrounds.colors} />
     );
   };
+
   const MyTasksPage = () => {
     return !props.auth.isAuthenticated ? (
       <Navigate to="/" />
@@ -180,6 +172,7 @@ function Main(props: any) {
       <MyTasks tasks={props.tasks.tasks} createTask={props.createTask} backgrounds={props.backgrounds.colors} checkTask={props.checkTask} />
     );
   };
+
   const TasksPage = () => {
     return !props.auth.isAuthenticated ? (
       <Navigate to="/" />
@@ -187,6 +180,7 @@ function Main(props: any) {
       <Tasks tasks={props.tasks.tasks} createTask={props.createTask} updateTask={props.updateTask} checkTask={props.checkTask} deleteTask={props.deleteTask} backgrounds={props.backgrounds.colors} />
     );
   };
+
   const TasksDatePage = () => {
     return !props.auth.isAuthenticated ? (
       <Navigate to="/" />
@@ -194,6 +188,7 @@ function Main(props: any) {
       <TaskDate tasks={props.tasks.tasks} createDateTask={props.createDateTask} updateTask={props.updateTask} checkTask={props.checkTask} deleteTask={props.deleteTask} backgrounds={props.backgrounds.colors} />
     );
   };
+
   const TodayTasksPage = () => {
     return !props.auth.isAuthenticated ? (
       <Navigate to="/" />
@@ -201,6 +196,7 @@ function Main(props: any) {
       <TodayTasks tasks={props.tasks.tasks} createTask={props.createTask} addFavTask={props.addFavTask} updateTask={props.updateTask} checkTask={props.checkTask} deleteTask={props.deleteTask} backgrounds={props.backgrounds.colors} />
     );
   };
+
   const GroupCreatorPage = () => {
     return !props.auth.isAuthenticated ? (
       <Navigate to="/" />
@@ -208,13 +204,15 @@ function Main(props: any) {
       <GroupCreator tasks={props.tasks.tasks} createGroup={props.createGroup} backgrounds={props.backgrounds.colors} />
     );
   };
+
   const GroupViewPage = () => {
     return !props.auth.isAuthenticated ? (
       <Navigate to="/" />
     ) : (
-      <GroupView tasks={props.tasks.tasks} backgrounds={props.backgrounds.colors} deleteListGroup={props.deleteListGroup} updateTaskGroup={props.updateTaskGroup} deleteUserGroup={props.deleteUserGroup} checkTask={props.checkTask} deleteTaskGroup={props.deleteTaskGroup} addUserGroup={props.addUserGroup} sendGroupTask={props.sendGroupTask}/>
+      <GroupView tasks={props.tasks.tasks} backgrounds={props.backgrounds.colors} deleteListGroup={props.deleteListGroup} updateTaskGroup={props.updateTaskGroup} deleteUserGroup={props.deleteUserGroup} checkTask={props.checkTask} deleteTaskGroup={props.deleteTaskGroup} addUserGroup={props.addUserGroup} sendGroupTask={props.sendGroupTask} />
     );
   };
+
   const ListsCreatorPage = () => {
     return !props.auth.isAuthenticated ? (
       <Navigate to="/" />
@@ -222,20 +220,23 @@ function Main(props: any) {
       <ListsCreator tasks={props.tasks.tasks} createList={props.createList} backgrounds={props.backgrounds.colors} />
     );
   };
+
   const ListViewPage = () => {
     return !props.auth.isAuthenticated ? (
       <Navigate to="/" />
     ) : (
-      <ListView tasks={props.tasks.tasks} backgrounds={props.backgrounds.colors} createTaskList={props.createTaskList} updateTaskList={props.updateTaskList} deleteTaskList={props.deleteTaskList} checkGroupTask={props.checkGroupTask} deleteListGroup={props.deleteListGroup}/>
+      <ListView tasks={props.tasks.tasks} backgrounds={props.backgrounds.colors} createTaskList={props.createTaskList} updateTaskList={props.updateTaskList} deleteTaskList={props.deleteTaskList} checkGroupTask={props.checkGroupTask} deleteListGroup={props.deleteListGroup} />
     );
   };
+
   const SearchResultPage = () => {
     return !props.auth.isAuthenticated ? (
       <Navigate to="/" />
     ) : (
-      <SearchResults  />
+      <SearchResults />
     );
   };
+
   const BackgroundsDisplay = () => {
     return !props.auth.isAuthenticated ? (
       null
@@ -243,124 +244,30 @@ function Main(props: any) {
       <Backgrounds changeBackgrounds={props.changeBackgrounds} />
     );
   };
-  // const router = createBrowserRouter([
-  //   {
-  //     path: "/",
-  //     element: <IndexPage />
-  //   },
-  //   {
-  //     path: "login",
-  //     element: <LoginPage />,
-  //   },
-  //   {
-  //     path: "signup",
-  //     element: <SignupPage />
-  //   },
-  //   {
-  //     path: "post-signup",
-  //     element: <PostSignUpAuth />
-  //   },
-  //   {
-  //     path: "home",
-  //     element: <HomePage />
-  //   },
-  //   {
-  //     path: "importants",
-  //     element: <ImportantsPage />
-  //   },
-  //   {
-  //     path: "my-tasks",
-  //     element: <MyTasksPage />
-  //   },
-  //   {
-  //     path: "tasks",
-  //     element: <TasksPage />
-  //   },
-  //   {
-  //     path: "tasks-date",
-  //     element: <TasksDatePage />
-  //   },
-  //   {
-  //     path: "tasks",
-  //     element: <TodayTasksPage />
-  //   }
-  // ]);<RouterProvider router={router} />
+
   return (
     <>
       <NavbarPage />
       <BackgroundsDisplay />
       <Routes>
-        <Route path="/"
-          element={<IndexPage />}
-        ></Route>
-        <Route path="/login"
-          element={<LoginPage />}
-        ></Route>
-        <Route path="/signup"
-          element={<SignupPage />}
-        ></Route>
-        <Route path="/post-signup"
-          element={<PostSignUpAuth />}
-        ></Route>
-        <Route path="/home"
-          element={<TodayTasksPage />}
-        ></Route>
-        <Route path="/importants"
-          element={<ImportantsPage />}
-        ></Route>
-        <Route path="/mytasks"
-          element={<MyTasksPage />}
-        ></Route>
-        <Route path="/alltasks"
-          element={<TasksPage />}
-        ></Route>
-        <Route path="/whitdate"
-          element={<TasksDatePage />}
-        ></Route>
-        <Route path="/all-tasks"
-          element={<HomePage />}
-        ></Route>
-        <Route path="/groupcreator"
-          element={<GroupCreatorPage />}
-        ></Route>
-        <Route path="/group-view/:groupId"
-          element={<GroupViewPage />}
-        ></Route>
-        <Route path="/listcreator"
-          element={<ListsCreatorPage />}
-        ></Route>
-        <Route path="/list-view/:listId"
-          element={<ListViewPage />}
-        ></Route>
-        <Route path="/searchView"
-          element={<SearchResultPage />}
-        ></Route>
+        <Route path="/" element={<IndexPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/post-signup" element={<PostSignUpAuth />} />
+        <Route path="/home" element={<TodayTasksPage />} />
+        <Route path="/importants" element={<ImportantsPage />} />
+        <Route path="/mytasks" element={<MyTasksPage />} />
+        <Route path="/alltasks" element={<TasksPage />} />
+        <Route path="/whitdate" element={<TasksDatePage />} />
+        <Route path="/all-tasks" element={<HomePage />} />
+        <Route path="/groupcreator" element={<GroupCreatorPage />} />
+        <Route path="/group-view/:groupId" element={<GroupViewPage />} />
+        <Route path="/listcreator" element={<ListsCreatorPage />} />
+        <Route path="/list-view/:listId" element={<ListViewPage />} />
+        <Route path="/searchView" element={<SearchResultPage />} />
       </Routes>
     </>
   )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Main)
-// const Login = () => {
-//   return this.props.auth.isAuthenticated ? (
-//     <Login
-//       auth={this.props.auth}
-//       inbox={this.props.inbox}
-//     />
-
-//   ) :
-//     this.props.location.pathname === "/" ? null
-//       : <RegisterFormHeader />
-// };
-
-// const Headers = () => {
-//   return this.props.auth.isAuthenticated ? (
-//     <Header
-//       auth={this.props.auth}
-//       inbox={this.props.inbox}
-//     />
-
-//   ) :
-//     this.props.location.pathname === "/" ? null
-//       : <RegisterFormHeader />
-// };
+export default connect(mapStateToProps, mapDispatchToProps)(Main as any)

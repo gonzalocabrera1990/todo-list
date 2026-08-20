@@ -1,9 +1,7 @@
 import { baseUrl } from "../shared/baseUrl";
 
-export const getHelper = (url:any) => {
+export const getHelper = (url: string): Promise<any> => {
   const bearer = 'Bearer ' + localStorage.getItem('token');
-  console.log('bearerbe',bearer);
-  
   return fetch(baseUrl + url, {
     method: "GET",
     headers: {
@@ -15,7 +13,6 @@ export const getHelper = (url:any) => {
         return response;
       } else {
         var error = new Error('Error ' + response.status + ': ' + response.statusText);
-        // error.response = response;
         throw error;
       }
     },
@@ -32,7 +29,8 @@ export const getHelper = (url:any) => {
       throw errmess;
     })
 }
-export const postHelperBody = (url:any, creds:any) => {
+
+export const postHelperBody = (url: string, creds: unknown): Promise<any> => {
   const bearer = 'Bearer ' + localStorage.getItem('token');
   return fetch(baseUrl + url, {
     method: "POST",
@@ -50,7 +48,6 @@ export const postHelperBody = (url:any, creds:any) => {
           var error = new Error(
             "Error " + response.status + ": " + response.statusText
           );
-          // error.response = response;
           throw error;
         }
       },
@@ -67,7 +64,8 @@ export const postHelperBody = (url:any, creds:any) => {
       throw errmess;
     })
 }
-export const postHelperMedia = (url:any, creds:any) => {
+
+export const postHelperMedia = (url: string, creds: FormData): Promise<any> => {
   const bearer = 'Bearer ' + localStorage.getItem('token');
   return fetch(baseUrl + url, {
     method: "POST",
@@ -84,7 +82,6 @@ export const postHelperMedia = (url:any, creds:any) => {
           var error = new Error(
             "Error " + response.status + ": " + response.statusText
           );
-          // error.response = response;
           throw error;
         }
       },
@@ -101,9 +98,10 @@ export const postHelperMedia = (url:any, creds:any) => {
       throw errmess;
     })
 }
-export const putHelperBody = (url:any, creds:any) => {
+
+export const putHelperBody = (url: string, creds: unknown): Promise<any> => {
   const bearer = 'Bearer ' + localStorage.getItem('token');
-  return fetch(baseUrl + url , {
+  return fetch(baseUrl + url, {
     method: "PUT",
     body: JSON.stringify(creds),
     headers: {
@@ -119,7 +117,6 @@ export const putHelperBody = (url:any, creds:any) => {
         var error = new Error(
           "Setting Error " + response.status + ": " + response.statusText
         );
-        // error.response = response;
         throw error;
       }
     },
@@ -137,7 +134,8 @@ export const putHelperBody = (url:any, creds:any) => {
       throw errmess;
     })
 }
-export const deleteHelper = (url:any) => {
+
+export const deleteHelper = (url: string): Promise<any> => {
   const bearer = 'Bearer ' + localStorage.getItem('token');
   return fetch(baseUrl + url, {
     method: "DELETE",
@@ -151,7 +149,6 @@ export const deleteHelper = (url:any) => {
         return response;
       } else {
         var error = new Error('Error ' + response.status + ': ' + response.statusText);
-        // error.response = response;
         throw error;
       }
     },
